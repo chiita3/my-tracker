@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>3年目標トラッカー</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#6B9FD4;--pl:#E8F1FA;--bg:#F0F4F8;--card:#fff;
+  --tx:#2D3748;--txl:#718096;--gn:#68B96A;--rd:#E57373;--yw:#F5A623;
+  --br:#E2E8F0;--nav:64px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--tx);max-width:480px;margin:0 auto;min-height:100vh}
+
+/* ===== LOGIN ===== */
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#E8F1FA 0%,#F0F4F8 100%);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--card);border-radius:20px;padding:32px 24px;text-align:center;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.login-icon{font-size:48px;margin-bottom:12px}
+.login-title{font-size:20px;font-weight:700;color:var(--p);margin-bottom:8px}
+.login-desc{font-size:13px;color:var(--txl);line-height:1.7;margin-bottom:24px}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:10px;border:1.5px solid var(--br);background:var(--card);cursor:pointer;font-size:15px;font-weight:600;color:var(--tx);transition:background .15s;-webkit-tap-highlight-color:transparent}
+.google-btn:active{background:var(--bg)}
+.google-btn img{width:20px;height:20px}
+.login-note{font-size:11px;color:var(--txl);margin-top:14px}
+
+/* ===== HEADER ===== */
+.hdr{background:var(--card);padding:12px 16px;border-bottom:1px solid var(--br);position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hdr-title{font-size:16px;font-weight:700;color:var(--p)}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.hdr-saved{font-size:11px;color:var(--gn);font-weight:600;opacity:0;transition:opacity .4s}
+.hdr-saved.show{opacity:1}
+.hdr-sync{font-size:11px;color:var(--p);font-weight:600;display:none}
+.hdr-sync.show{display:block}
+.user-avatar{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid var(--br)}
+.info-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--br);background:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--txl);-webkit-tap-highlight-color:transparent}
+
+/* ===== MAIN / NAV ===== */
+.main{padding:12px 14px;padding-bottom:calc(var(--nav) + 16px)}
+.screen{display:none}.screen.active{display:block}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav);background:var(--card);border-top:1px solid var(--br);display:flex;z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;cursor:pointer;color:var(--txl);font-size:11px;padding:6px;-webkit-tap-highlight-color:transparent}
+.nb.active{color:var(--p)}.nb .ic{font-size:20px;line-height:1}
+
+/* ===== DATE NAV ===== */
+.dnav{display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 0 6px}
+.dnb{width:38px;height:38px;border-radius:50%;border:1px solid var(--br);background:var(--card);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.dnl{font-size:15px;font-weight:600;min-width:120px;text-align:center}
+
+/* ===== PROGRESS ===== */
+.pcrd{background:var(--pl);border-radius:12px;padding:14px;margin-bottom:10px}
+.phdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ptitle{font-size:13px;color:var(--p);font-weight:600}
+.ppct{font-size:24px;font-weight:700;color:var(--p)}
+.pbar{height:8px;background:#CBD5E0;border-radius:4px;overflow:hidden}
+.pfill{height:100%;background:var(--p);border-radius:4px;transition:width .3s}
+
+/* ===== STAGE ===== */
+.scrd{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
+.stitle{font-size:13px;font-weight:700;margin-bottom:8px}
+.sbadges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sbadge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--bg);color:var(--txl);border:1px solid var(--br);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sbadge.active{background:var(--p);color:#fff;border-color:var(--p)}
+.sdesc{font-size:12px;color:var(--txl);margin-bottom:10px}
+
+/* ===== SECTION ===== */
+.sec{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.shdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.stit{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.sbdg{font-size:11px;background:var(--pl);color:var(--p);padding:2px 8px;border-radius:10px}
+.sarr{font-size:11px;color:var(--txl);transition:transform .2s}.sarr.open{transform:rotate(180deg)}
+.sbody{padding:0 14px 12px;border-top:1px solid var(--br)}
+
+/* ===== CHECK ITEM ===== */
+.ci{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--br);gap:10px}
+.ci:last-child{border-bottom:none}
+.cl{flex:1;font-size:14px;line-height:1.4}
+.cl .hint{display:block;font-size:11px;color:var(--txl);margin-top:2px;line-height:1.5}
+
+/* ===== DAY TYPE ===== */
+.dt-grp{display:flex;gap:5px;flex-shrink:0}
+.dt-btn{padding:6px 11px;border-radius:16px;border:1.5px solid var(--br);font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--tx);-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.dt-btn.sel{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* ===== TOGGLE ===== */
+.tgl{position:relative;width:48px;height:28px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tsl{position:absolute;inset:0;background:#CBD5E0;border-radius:14px;cursor:pointer;transition:background .2s}
+.tsl::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl input:checked+.tsl{background:var(--gn)}
+.tgl input:checked+.tsl::after{transform:translateX(20px)}
+.tgl.bad input:checked+.tsl{background:var(--rd)}
+.tgl.warn input:checked+.tsl{background:var(--yw)}
+
+/* ===== SELECT / INPUT ===== */
+.msel{background:var(--bg);border:1px solid var(--br);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--tx);outline:none;cursor:pointer}
+.tinp{background:var(--bg);border:1px solid var(--br);border-radius:8px;padding:8px 10px;font-size:14px;color:var(--tx);outline:none;width:100px}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent}
+.btn:active{opacity:.7}
+.btn-p{background:var(--p);color:#fff}
+.btn-o{background:transparent;color:var(--p);border:1.5px solid var(--p)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn-danger{background:transparent;color:var(--rd);border:1.5px solid var(--rd)}
+
+/* ===== CUSTOM ===== */
+.cadd{display:flex;gap:8px;margin-top:8px}
+.cinp{flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--br);font-size:14px;background:var(--bg);color:var(--tx);outline:none}
+.del{background:none;border:none;cursor:pointer;color:var(--txl);font-size:20px;padding:4px;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+
+/* ===== MONTHLY ===== */
+.msec{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
+.mstit{font-size:15px;font-weight:700;margin-bottom:12px;color:var(--p)}
+.rg{display:flex;gap:6px;flex-wrap:wrap}
+.rb{padding:8px 14px;border-radius:20px;border:1.5px solid var(--br);font-size:13px;cursor:pointer;background:var(--bg);color:var(--tx);transition:all .15s;-webkit-tap-highlight-color:transparent}
+.rb.sel{background:var(--p);color:#fff;border-color:var(--p)}
+.rb.bad.sel{background:var(--rd);border-color:var(--rd)}
+.mi{padding:12px 0;border-bottom:1px solid var(--br)}
+.mi:last-child{border-bottom:none}
+.mil{font-size:14px;margin-bottom:8px}
+.iinp{width:100%;padding:10px 12px;border:1px solid var(--br);border-radius:8px;font-size:16px;background:var(--bg);color:var(--tx);outline:none}
+.astat{background:var(--pl);border-radius:8px;padding:12px}
+.arow{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+.aval{font-weight:700;color:var(--p)}
+
+/* ===== CHARTS ===== */
+.ccrd{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
+.ctit{font-size:15px;font-weight:700;margin-bottom:12px}
+.psel{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+.psel::-webkit-scrollbar{display:none}
+.pchip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--br);font-size:12px;cursor:pointer;background:var(--bg);color:var(--tx);-webkit-tap-highlight-color:transparent}
+.pchip.active{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* ===== GAP ===== */
+.gcrd{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
+.gtit{font-size:15px;font-weight:700;margin-bottom:4px}
+.gsub{font-size:12px;color:var(--txl);margin-bottom:14px}
+.grow{margin-bottom:12px}
+.glabs{display:flex;justify-content:space-between;font-size:11px;color:var(--txl);margin-bottom:3px}
+.gleg{display:flex;gap:14px;margin-top:10px}
+.gli{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--txl)}
+.ld{width:10px;height:10px;border-radius:2px}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:calc(var(--nav) + 16px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.72);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== MODAL ===== */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.moverlay.show{display:flex}
+.mdlg{background:var(--card);border-radius:20px 20px 0 0;padding:20px 20px 40px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
+.mdlg-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.mdlg-close{font-size:22px;cursor:pointer;color:var(--txl);-webkit-tap-highlight-color:transparent}
+.mdlg h3{font-size:13px;font-weight:700;color:var(--p);margin:12px 0 4px}
+.mdlg p,.mdlg li{font-size:13px;line-height:1.8;color:var(--tx)}
+.mdlg ul{padding-left:16px}
+.mdlg .tip{background:var(--pl);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:12px;line-height:1.7}
+.mdlg .user-section{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border-radius:10px;margin-bottom:12px}
+.mdlg .user-section img{width:40px;height:40px;border-radius:50%}
+.mdlg .user-name{font-size:14px;font-weight:600}
+.mdlg .user-email{font-size:12px;color:var(--txl)}
+
+/* ===== EXPORT ===== */
+.expbtn{display:flex;align-items:center;justify-content:center;margin-top:4px;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-icon">✨</div>
+    <div class="login-title">3年目標トラッカー</div>
+    <div class="login-desc">Googleアカウントでログインすると<br>PCとスマホのデータが自動で同期されます</div>
+    <button class="google-btn" onclick="signIn()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Googleでログイン
+    </button>
+    <div class="login-note">データはあなたのアカウントに安全に保存されます</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="appRoot" style="display:none">
+
+<div class="hdr">
+  <span class="hdr-title">✨ 3年目標トラッカー</span>
+  <div class="hdr-right">
+    <span class="hdr-saved" id="hdrSaved">● 保存済み</span>
+    <span class="hdr-sync" id="hdrSync">⟳ 同期中...</span>
+    <button class="info-btn" onclick="showInfo()">ℹ</button>
+    <img class="user-avatar" id="userAvatar" src="" alt="" onclick="showInfo()" style="display:none">
+  </div>
+</div>
+
+<!-- Info / Account Modal -->
+<div class="moverlay" id="infoModal" onclick="hideInfo(event)">
+  <div class="mdlg">
+    <div class="mdlg-title">アカウント・使い方 <span class="mdlg-close" onclick="hideInfo()">×</span></div>
+    <div class="user-section" id="userSection">
+      <img id="modalAvatar" src="" alt="">
+      <div><div class="user-name" id="modalName"></div><div class="user-email" id="modalEmail"></div></div>
+    </div>
+    <button class="btn btn-danger btn-sm" style="width:100%;margin-bottom:16px" onclick="signOut()">ログアウト</button>
+    <h3>💾 自動保存・同期について</h3>
+    <p>入力はすべて<strong>即時・自動保存</strong>されます。保存ボタンは不要です。データはFirebase（Google）のクラウドに保存され、同じGoogleアカウントでログインすれば全デバイスで同期されます。</p>
+    <div class="tip">📱 スマホでこのURLを開いてGoogleログインするだけで同期が始まります。アプリを切り替えたとき・ページを開いたときに自動で最新データを取得します。</div>
+    <h3>🔄 データのバックアップ</h3>
+    <p>振り返り画面の「データをエクスポート」でJSONファイルに書き出せます。</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="main">
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="screenHome">
+  <div class="dnav">
+    <button class="dnb" id="prevDay">‹</button>
+    <div class="dnl" id="curDateLbl"></div>
+    <button class="dnb" id="nextDay">›</button>
+  </div>
+  <div class="pcrd">
+    <div class="phdr"><span class="ptitle">今日の達成率</span><span class="ppct" id="todayPct">0%</span></div>
+    <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
+  </div>
+  <div class="scrd">
+    <div class="stitle">🏃 運動ステージ</div>
+    <div class="sbadges" id="stageBadges"></div>
+    <div class="sdesc" id="stageDesc"></div>
+    <button class="btn btn-o btn-sm" id="stageUpBtn" style="display:none" onclick="advanceStage()">次のステージへ →</button>
+  </div>
+  <!-- 朝 -->
+  <div class="sec">
+    <div class="shdr" onclick="toggleSec('morning')">
+      <span class="stit">☀️ 朝 <span class="sbdg" id="bdgMorning">0/8</span></span>
+      <span class="sarr open" id="arrMorning">▼</span>
+    </div>
+    <div class="sbody" id="bodyMorning">
+      <div class="ci"><div class="cl">シャワー・顔水洗い</div><label class="tgl"><input type="checkbox" data-key="morning.shower" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">タオルドライ・ヘアオイル・ドライヤー</div><label class="tgl"><input type="checkbox" data-key="morning.hairOil" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="morning.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">日焼け止め / 化粧<span class="hint">ONにすると夜にクレンジングが出ます</span></div><label class="tgl"><input type="checkbox" data-key="morning.sunscreen" onchange="onSunscreen(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="morning.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">スッキリ起きられたか</div><label class="tgl"><input type="checkbox" data-key="morning.goodWakeup" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">起床時間</div><input type="time" class="tinp" data-key="morning.wakeupTime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">朝ご飯</div><select class="msel" data-key="morning.breakfast" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
+    </div>
+  </div>
+  <!-- 昼 -->
+  <div class="sec">
+    <div class="shdr" onclick="toggleSec('afternoon')">
+      <span class="stit">🌤 昼 <span class="sbdg" id="bdgAfternoon">0/3</span></span>
+      <span class="sarr" id="arrAfternoon">▼</span>
+    </div>
+    <div class="sbody" id="bodyAfternoon" style="display:none">
+      <div class="ci">
+        <div class="cl">今日の状況</div>
+        <div class="dt-grp">
+          <button class="dt-btn" id="dt_work" onclick="setDayType('work')">仕事</button>
+          <button class="dt-btn" id="dt_out" onclick="setDayType('out')">外出</button>
+          <button class="dt-btn" id="dt_home" onclick="setDayType('home')">家</button>
+        </div>
+      </div>
+      <div class="ci" id="movedHourlyItem">
+        <div class="cl">1時間ごとに体を動かした</div>
+        <label class="tgl"><input type="checkbox" data-key="afternoon.movedHourly" onchange="ck(this)"><span class="tsl"></span></label>
+      </div>
+      <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="afternoon.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">お昼ご飯</div><select class="msel" data-key="afternoon.lunch" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
+    </div>
+  </div>
+  <!-- 夜 -->
+  <div class="sec">
+    <div class="shdr" onclick="toggleSec('evening')">
+      <span class="stit">🌙 夜 <span class="sbdg" id="bdgEvening">0/5</span></span>
+      <span class="sarr" id="arrEvening">▼</span>
+    </div>
+    <div class="sbody" id="bodyEvening" style="display:none">
+      <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="evening.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci" id="cleansingItem" style="display:none"><div class="cl">クレンジング</div><label class="tgl"><input type="checkbox" data-key="evening.cleansing" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">洗顔</div><label class="tgl"><input type="checkbox" data-key="evening.faceWash" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="evening.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">就寝時間</div><input type="time" class="tinp" data-key="evening.bedtime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">夜ご飯</div><select class="msel" data-key="evening.dinner" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
+    </div>
+  </div>
+  <!-- 1日まとめ -->
+  <div class="sec">
+    <div class="shdr" onclick="toggleSec('daily')">
+      <span class="stit">📋 1日まとめ <span class="sbdg" id="bdgDaily">0/12</span></span>
+      <span class="sarr" id="arrDaily">▼</span>
+    </div>
+    <div class="sbody" id="bodyDaily" style="display:none">
+      <div class="ci"><div class="cl">タンパク質カテゴリを食べた<span class="hint">目標: 48g｜サラダチキン・卵・豆腐・さば/いわし缶</span></div><label class="tgl"><input type="checkbox" data-key="daily.protein" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">食物繊維カテゴリを食べた<span class="hint">目標: 18g以上｜糸寒天・めかぶ・もずく・豆腐・野菜</span></div><label class="tgl"><input type="checkbox" data-key="daily.fiber" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">発酵食品カテゴリを食べた<span class="hint">ヨーグルト・納豆・キムチ・味噌汁</span></div><label class="tgl"><input type="checkbox" data-key="daily.fermented" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">腸を潤す食品を食べた<span class="hint">オリーブオイル・オクラ・なめこ・アボカド</span></div><label class="tgl"><input type="checkbox" data-key="daily.intestineOil" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">水分 2L以上飲んだ</div><label class="tgl"><input type="checkbox" data-key="daily.water2L" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">運動・外出した</div><label class="tgl"><input type="checkbox" data-key="daily.exercise" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">便が出た</div><label class="tgl"><input type="checkbox" data-key="daily.stool" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">残便感があった<span class="hint">⚠ あると良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">出血があった<span class="hint">⚠ あると良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">トイレに5分以上いた<span class="hint">⚠ ONは良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.toiletOver5" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">お酒を飲んだ</div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">カフェタイムあり</div><label class="tgl"><input type="checkbox" data-key="daily.cafeTime" onchange="ck(this)"><span class="tsl"></span></label></div>
+    </div>
+  </div>
+  <!-- 自由項目 -->
+  <div class="sec">
+    <div class="shdr" onclick="toggleSec('custom')">
+      <span class="stit">✏️ 自由項目 <span class="sbdg" id="bdgCustom">0/0</span></span>
+      <span class="sarr" id="arrCustom">▼</span>
+    </div>
+    <div class="sbody" id="bodyCustom" style="display:none">
+      <div id="customList"></div>
+      <div class="cadd">
+        <input type="text" class="cinp" id="customInput" placeholder="項目を追加..." onkeydown="if(event.key==='Enter')addCustom()">
+        <button class="btn btn-p btn-sm" onclick="addCustom()">追加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MONTHLY ===== -->
+<div class="screen" id="screenMonthly">
+  <div class="dnav">
+    <button class="dnb" id="prevMonth">‹</button>
+    <div class="dnl" id="curMonthLbl"></div>
+    <button class="dnb" id="nextMonth">›</button>
+  </div>
+  <div class="msec">
+    <div class="mstit">📊 今月の自動集計</div>
+    <div class="astat">
+      <div class="arow"><span>スッキリ起きられた日</span><span class="aval" id="autoWakeup">-</span></div>
+      <div class="arow"><span>残便感があった日</span><span class="aval" id="autoResidual">-</span></div>
+    </div>
+  </div>
+  <div class="msec">
+    <div class="mstit">✨ 肌</div>
+    <div class="mi"><div class="mil">洗顔後3分後につっぱりがないか</div><div class="rg" id="skin_tightness"></div></div>
+    <div class="mi"><div class="mil">頬を押してすぐ戻るか・ハリ</div><div class="rg" id="skin_elasticity"></div></div>
+    <div class="mi"><div class="mil">明るい場所で光の反射があるか・ツヤ</div><div class="rg" id="skin_glow"></div></div>
+    <div class="mi"><div class="mil">シミ・毛穴が先月より気になるか</div><div class="rg" id="skin_spots"></div></div>
+  </div>
+  <div class="msec">
+    <div class="mstit">💇 髪</div>
+    <div class="mi"><div class="mil">乾かした後の手触りが柔らかいか</div><div class="rg" id="hair_soft"></div></div>
+    <div class="mi"><div class="mil">光に当てたときに艶があるか</div><div class="rg" id="hair_shine"></div></div>
+    <div class="mi"><div class="mil">抜け毛が先月より</div><div class="rg" id="hair_loss"></div></div>
+  </div>
+  <div class="msec">
+    <div class="mstit">🌸 体型</div>
+    <div class="mi"><div class="mil">ウエストの感覚</div><div class="rg" id="body_waist"></div></div>
+    <div class="mi"><div class="mil">体が軽いと感じるか</div><div class="rg" id="body_light"></div></div>
+  </div>
+  <div class="msec">
+    <div class="mstit">💰 収入</div>
+    <div class="mi"><div class="mil">今月の副業収入（円）</div><input type="number" class="iinp" id="income_amount" placeholder="0" oninput="saveMF('income.amount',this.value)"></div>
+    <div class="mi"><div class="mil">UCOさんの仕事で進んだことがあるか</div><div class="rg" id="income_uco"></div></div>
+  </div>
+</div>
+
+<!-- ===== REVIEW ===== -->
+<div class="screen" id="screenReview">
+  <div style="padding-top:10px"><div class="psel" id="reviewPeriods"></div></div>
+  <div class="ccrd">
+    <div class="ctit">📊 ルーティン月間達成率</div>
+    <div style="position:relative;height:430px"><canvas id="routineChart"></canvas></div>
+  </div>
+  <div class="ccrd">
+    <div class="ctit">📈 月1チェックの推移</div>
+    <div style="position:relative;height:240px"><canvas id="monthlyChart"></canvas></div>
+  </div>
+  <div class="gcrd">
+    <div class="gtit">🔍 行動 vs 状態のギャップ</div>
+    <div class="gsub">行動はできているのに状態が変わっていない場合に注目</div>
+    <div id="gapViz"></div>
+    <div class="gleg">
+      <div class="gli"><div class="ld" style="background:var(--p)"></div>行動達成率</div>
+      <div class="gli"><div class="ld" style="background:var(--gn)"></div>状態スコア</div>
+    </div>
+  </div>
+  <div class="expbtn">
+    <button class="btn btn-o btn-sm" onclick="exportData()">💾 データをエクスポート</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<nav class="bnav">
+  <button class="nb active" id="navHome" onclick="switchTo('Home')"><span class="ic">🏠</span><span>今日</span></button>
+  <button class="nb" id="navMonthly" onclick="switchTo('Monthly')"><span class="ic">📅</span><span>月チェック</span></button>
+  <button class="nb" id="navReview" onclick="switchTo('Review')"><span class="ic">📈</span><span>振り返り</span></button>
+</nav>
+
+</div><!-- /appRoot -->
+
+<script>
+// ============================================================
+// Firebase の設定
+// Firebaseコンソール > プロジェクト設定 > マイアプリ から
+// firebaseConfig をコピーしてここに貼り付けてください
+// ============================================================
+const firebaseConfig = {
+  apiKey:            "AIzaSyDBHe2X5qj5Gjsch-kq7sJVcAfsXsgK7Ws",
+  authDomain:        "my-tracker-2604.firebaseapp.com",
+  projectId:         "my-tracker-2604",
+  storageBucket:     "my-tracker-2604.firebasestorage.app",
+  messagingSenderId: "694631037383",
+  appId:             "1:694631037383:web:476c4a6ac637fe15f901e2"
+};
+// ============================================================
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+db.enablePersistence().catch(()=>{}); // オフライン対応
+
+let currentUser = null;
+let userRef = () => db.collection('users').doc(currentUser.uid);
+
+// ===== AUTH =====
+function signIn(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(e=>alert('ログインに失敗しました: '+e.message));
+}
+function signOut(){
+  if(!confirm('ログアウトしますか？'))return;
+  auth.signOut();
+}
+
+auth.onAuthStateChanged(async user => {
+  if(user){
+    currentUser = user;
+    // Update UI
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('appRoot').style.display='block';
+    const av = document.getElementById('userAvatar');
+    if(user.photoURL){av.src=user.photoURL;av.style.display='block'}
+    document.getElementById('modalAvatar').src=user.photoURL||'';
+    document.getElementById('modalName').textContent=user.displayName||'';
+    document.getElementById('modalEmail').textContent=user.email||'';
+    // Sync from cloud then render
+    await syncFromCloud();
+    initApp();
+  } else {
+    currentUser = null;
+    document.getElementById('loginOverlay').style.display='flex';
+    document.getElementById('appRoot').style.display='none';
+  }
+});
+
+// ===== CLOUD SYNC =====
+async function syncFromCloud(){
+  if(!currentUser) return;
+  showSyncIndicator(true);
+  try{
+    const uid = currentUser.uid;
+    // Daily
+    const dailySnap = await db.collection('users').doc(uid).collection('daily').get();
+    if(!dailySnap.empty){
+      const all={};
+      dailySnap.forEach(d=>{ all[d.id]=d.data(); });
+      localStorage.setItem(SK.d, JSON.stringify(all));
+    }
+    // Monthly
+    const monthlySnap = await db.collection('users').doc(uid).collection('monthly').get();
+    if(!monthlySnap.empty){
+      const all={};
+      monthlySnap.forEach(d=>{ all[d.id]=d.data(); });
+      localStorage.setItem(SK.m, JSON.stringify(all));
+    }
+    // Settings
+    const settingsDoc = await db.collection('users').doc(uid).collection('meta').doc('settings').get();
+    if(settingsDoc.exists) localStorage.setItem(SK.s, JSON.stringify(settingsDoc.data()));
+    // Custom items
+    const customDoc = await db.collection('users').doc(uid).collection('meta').doc('customItems').get();
+    if(customDoc.exists) localStorage.setItem(SK.c, JSON.stringify(customDoc.data().items||[]));
+  } catch(e){
+    console.warn('Cloud sync failed:', e);
+  }
+  showSyncIndicator(false);
+}
+
+// Auto-sync when app becomes visible (e.g. switching from PC to phone)
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='visible' && currentUser){
+    syncFromCloud().then(()=>{ renderHome(); if(curScreen==='Monthly')renderMonthly(); });
+  }
+});
+
+let curScreen = 'Home';
+
+// ===== STORAGE (local-first + cloud write) =====
+const SK={d:'tr_daily',m:'tr_monthly',s:'tr_settings',c:'tr_custom'};
+function ld(k){try{return JSON.parse(localStorage.getItem(k)||'{}')}catch{return{}}}
+function sd(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function getS(){const s=ld(SK.s);return Object.keys(s).length?s:{exerciseStage:1}}
+function setS(v){
+  sd(SK.s,v);
+  if(currentUser) db.collection('users').doc(currentUser.uid).collection('meta').doc('settings').set(v).catch(console.warn);
+}
+function getCI(){try{return JSON.parse(localStorage.getItem(SK.c)||'[]')}catch{return[]}}
+function setCI(v){
+  localStorage.setItem(SK.c,JSON.stringify(v));
+  if(currentUser) db.collection('users').doc(currentUser.uid).collection('meta').doc('customItems').set({items:v}).catch(console.warn);
+}
+function getDR(dt){const a=ld(SK.d);return a[dt]?mergeDR(a[dt]):emptyDR()}
+function setDR(dt,r){
+  const a=ld(SK.d);a[dt]=r;sd(SK.d,a);
+  if(currentUser) db.collection('users').doc(currentUser.uid).collection('daily').doc(dt).set(r).catch(console.warn);
+}
+function getMR(ym){const a=ld(SK.m);return a[ym]||{}}
+function setMR(ym,r){
+  const a=ld(SK.m);a[ym]=r;sd(SK.m,a);
+  if(currentUser) db.collection('users').doc(currentUser.uid).collection('monthly').doc(ym).set(r).catch(console.warn);
+}
+
+function emptyDR(){return{
+  morning:{shower:false,hairOil:false,skincare:false,sunscreen:false,supplements:false,goodWakeup:false,wakeupTime:'',breakfast:''},
+  afternoon:{dayType:'',movedHourly:false,supplements:false,lunch:''},
+  evening:{supplements:false,cleansing:false,faceWash:false,skincare:false,bedtime:'',dinner:''},
+  daily:{protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,stool:false,residualStool:false,bleeding:false,toiletOver5:false,alcohol:false,cafeTime:false},
+  custom:{}
+}}
+function mergeDR(s){
+  const d=emptyDR();
+  return{morning:{...d.morning,...(s.morning||{})},afternoon:{...d.afternoon,...(s.afternoon||{})},evening:{...d.evening,...(s.evening||{})},daily:{...d.daily,...(s.daily||{})},custom:{...(s.custom||{})}};
+}
+
+// ===== HELPERS =====
+function fmtDate(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function fmtYM(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function fmtDisp(d){const w=['日','月','火','水','木','金','土'];return`${d.getMonth()+1}月${d.getDate()}日（${w[d.getDay()]}）`}
+function fmtDispM(d){return`${d.getFullYear()}年${d.getMonth()+1}月`}
+function getNested(o,p){return p.split('.').reduce((c,k)=>c==null?undefined:c[k],o)}
+function setNested(o,p,v){const ps=p.split('.');let c=o;for(let i=0;i<ps.length-1;i++){if(!c[ps[i]])c[ps[i]]={};c=c[ps[i]]}c[ps[ps.length-1]]=v}
+function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML}
+
+// ===== APP STATE =====
+let curDate=new Date(), curMonth=new Date(), reviewYM=fmtYM(new Date());
+
+function initApp(){
+  initHome(); initMonthly(); initReview();
+}
+
+// ===== HOME =====
+function initHome(){
+  document.getElementById('prevDay').onclick=()=>{curDate.setDate(curDate.getDate()-1);renderHome()};
+  document.getElementById('nextDay').onclick=()=>{curDate.setDate(curDate.getDate()+1);renderHome()};
+  renderHome();
+}
+function renderHome(){
+  document.getElementById('curDateLbl').textContent=fmtDisp(curDate);
+  const r=getDR(fmtDate(curDate));
+  loadUI(r); updateProg(r); renderStage(); renderCustomList(r);
+}
+function loadUI(r){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const v=getNested(r,el.getAttribute('data-key'));
+    if(el.type==='checkbox')el.checked=v===true; else el.value=v||'';
+  });
+  document.getElementById('cleansingItem').style.display=(r.morning&&r.morning.sunscreen)?'flex':'none';
+  updateDayTypeUI(r);
+}
+function ck(el){
+  const dt=fmtDate(curDate), r=getDR(dt);
+  setNested(r,el.getAttribute('data-key'),el.type==='checkbox'?el.checked:el.value);
+  setDR(dt,r); updateProg(r); showSaved();
+}
+function onSunscreen(el){
+  ck(el);
+  document.getElementById('cleansingItem').style.display=el.checked?'flex':'none';
+}
+function setDayType(type){
+  const dt=fmtDate(curDate), r=getDR(dt);
+  r.afternoon.dayType=r.afternoon.dayType===type?'':type;
+  setDR(dt,r); updateDayTypeUI(r); updateProg(r); showSaved();
+}
+function updateDayTypeUI(r){
+  const dt=(r.afternoon&&r.afternoon.dayType)||'';
+  ['work','out','home'].forEach(t=>{ const b=document.getElementById('dt_'+t); if(b)b.classList.toggle('sel',dt===t); });
+  const m=document.getElementById('movedHourlyItem');
+  if(m)m.style.display=dt!=='out'?'flex':'none';
+}
+function countItems(r){
+  let tot=0,done=0;
+  const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
+  ['shower','hairOil','skincare','sunscreen','supplements','goodWakeup'].forEach(k=>{tot++;if(m[k])done++});
+  tot++;if(m.wakeupTime)done++; tot++;if(m.breakfast)done++;
+  if(a.dayType!=='out'){tot++;if(a.movedHourly)done++}
+  tot++;if(a.supplements)done++; tot++;if(a.lunch)done++;
+  ['supplements','faceWash','skincare'].forEach(k=>{tot++;if(e[k])done++});
+  if(m.sunscreen){tot++;if(e.cleansing)done++}
+  tot++;if(e.bedtime)done++; tot++;if(e.dinner)done++;
+  ['protein','fiber','fermented','intestineOil','water2L','exercise','stool','residualStool','bleeding','toiletOver5','alcohol','cafeTime'].forEach(k=>{tot++;if(d[k])done++});
+  getCI().forEach(it=>{tot++;if((r.custom||{})[it.id])done++});
+  return{tot,done};
+}
+function updateProg(r){
+  const{tot,done}=countItems(r);
+  const pct=tot>0?Math.round(done/tot*100):0;
+  document.getElementById('todayPct').textContent=pct+'%';
+  document.getElementById('pfill').style.width=pct+'%';
+  updateBadges(r);
+}
+function updateBadges(r){
+  const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
+  const mc=['shower','hairOil','skincare','sunscreen','supplements','goodWakeup'].filter(k=>m[k]).length+(m.wakeupTime?1:0)+(m.breakfast?1:0);
+  document.getElementById('bdgMorning').textContent=mc+'/8';
+  let at=2,ac=(a.supplements?1:0)+(a.lunch?1:0);
+  if(a.dayType!=='out'){at++;if(a.movedHourly)ac++}
+  document.getElementById('bdgAfternoon').textContent=ac+'/'+at;
+  let et=5,ec=['supplements','faceWash','skincare'].filter(k=>e[k]).length+(e.bedtime?1:0)+(e.dinner?1:0);
+  if(m.sunscreen){et++;if(e.cleansing)ec++}
+  document.getElementById('bdgEvening').textContent=ec+'/'+et;
+  const dc=['protein','fiber','fermented','intestineOil','water2L','exercise','stool','residualStool','bleeding','toiletOver5','alcohol','cafeTime'].filter(k=>d[k]).length;
+  document.getElementById('bdgDaily').textContent=dc+'/12';
+  const ci=getCI(),cr=r.custom||{};
+  document.getElementById('bdgCustom').textContent=ci.filter(i=>cr[i.id]).length+'/'+ci.length;
+}
+function renderStage(){
+  const s=getS(),st=s.exerciseStage||1;
+  const descs={1:'予定のない日に外出する',2:'週2回外出する',3:'週2〜3回運動する'};
+  document.getElementById('stageBadges').innerHTML=[1,2,3].map(n=>`<span class="sbadge${n===st?' active':''}" onclick="setStage(${n})">ステージ${n}</span>`).join('');
+  document.getElementById('stageDesc').textContent=descs[st]||'';
+  document.getElementById('stageUpBtn').style.display=st<3?'inline-flex':'none';
+}
+function setStage(n){const s=getS();s.exerciseStage=n;setS(s);renderStage();showSaved()}
+function advanceStage(){const s=getS();if(s.exerciseStage<3){s.exerciseStage++;setS(s);renderStage();showSaved()}}
+function toggleSec(name){
+  const cap=name[0].toUpperCase()+name.slice(1);
+  const body=document.getElementById('body'+cap),arr=document.getElementById('arr'+cap);
+  if(!body)return;
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  arr.classList.toggle('open',open);
+}
+
+// ===== CUSTOM =====
+function renderCustomList(r){
+  const items=getCI(),cr=(r&&r.custom)||{};
+  document.getElementById('customList').innerHTML=items.map(it=>`
+    <div class="ci"><div class="cl">${esc(it.label)}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label class="tgl"><input type="checkbox" ${cr[it.id]?'checked':''} onchange="ckCustom(this,'${it.id}')"><span class="tsl"></span></label>
+        <button class="del" onclick="delCustom('${it.id}')">×</button>
+      </div></div>`).join('');
+}
+function ckCustom(el,id){
+  const dt=fmtDate(curDate),r=getDR(dt);
+  if(!r.custom)r.custom={};
+  r.custom[id]=el.checked;
+  setDR(dt,r);updateProg(r);showSaved();
+}
+function addCustom(){
+  const inp=document.getElementById('customInput');
+  const lbl=inp.value.trim();if(!lbl)return;
+  const items=getCI();
+  items.push({id:'c'+Date.now(),label:lbl});
+  setCI(items);inp.value='';
+  renderCustomList(getDR(fmtDate(curDate)));
+  updateBadges(getDR(fmtDate(curDate)));
+}
+function delCustom(id){
+  setCI(getCI().filter(i=>i.id!==id));
+  renderCustomList(getDR(fmtDate(curDate)));
+  updateBadges(getDR(fmtDate(curDate)));
+}
+
+// ===== MONTHLY =====
+const MF={
+  skin_tightness:{key:'skin.tightness',opts:[{v:'none',l:'つっぱりなし'},{v:'yes',l:'つっぱりあり',bad:true}]},
+  skin_elasticity:{key:'skin.elasticity',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし',bad:true}]},
+  skin_glow:{key:'skin.glow',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし',bad:true}]},
+  skin_spots:{key:'skin.spots',opts:[{v:'improved',l:'改善'},{v:'same',l:'変わらない'},{v:'worse',l:'悪化',bad:true}]},
+  hair_soft:{key:'hair.softness',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし',bad:true}]},
+  hair_shine:{key:'hair.shine',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし',bad:true}]},
+  hair_loss:{key:'hair.hairLoss',opts:[{v:'decreased',l:'減った'},{v:'same',l:'同じ'},{v:'increased',l:'増えた',bad:true}]},
+  body_waist:{key:'body.waist',opts:[{v:'looser',l:'ゆるくなった'},{v:'same',l:'変わらない'},{v:'tighter',l:'きつくなった',bad:true}]},
+  body_light:{key:'body.lightFeeling',opts:[{v:'yes',l:'はい'},{v:'no',l:'いいえ',bad:true}]},
+  income_uco:{key:'income.ucoProgress',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし'}]}
+};
+function initMonthly(){
+  document.getElementById('prevMonth').onclick=()=>{curMonth.setMonth(curMonth.getMonth()-1);renderMonthly()};
+  document.getElementById('nextMonth').onclick=()=>{curMonth.setMonth(curMonth.getMonth()+1);renderMonthly()};
+  renderMonthly();
+}
+function renderMonthly(){
+  const ym=fmtYM(curMonth);
+  document.getElementById('curMonthLbl').textContent=fmtDispM(curMonth);
+  const r=getMR(ym);
+  Object.keys(MF).forEach(fid=>{
+    const el=document.getElementById(fid);if(!el)return;
+    const{key,opts}=MF[fid];const cur=getNested(r,key);
+    el.innerHTML=opts.map(o=>`<button class="rb${cur===o.v?' sel':''}${o.bad&&cur===o.v?' bad':''}" onclick="selMO('${fid}','${o.v}',this,${!!o.bad})">${o.l}</button>`).join('');
+  });
+  const ia=document.getElementById('income_amount');
+  if(ia)ia.value=getNested(r,'income.amount')||'';
+  autoStats(ym);
+}
+function selMO(fid,val,btn,isBad){
+  const ym=fmtYM(curMonth),r=getMR(ym);
+  const{key}=MF[fid];const cur=getNested(r,key);
+  setNested(r,key,cur===val?null:val);setMR(ym,r);
+  btn.parentElement.querySelectorAll('.rb').forEach(b=>b.classList.remove('sel','bad'));
+  if(cur!==val){btn.classList.add('sel');if(isBad)btn.classList.add('bad')}
+  showSaved();
+}
+function saveMF(key,val){const ym=fmtYM(curMonth),r=getMR(ym);setNested(r,key,val);setMR(ym,r);showSaved()}
+function autoStats(ym){
+  const all=ld(SK.d),days=Object.keys(all).filter(d=>d.startsWith(ym));
+  if(!days.length){document.getElementById('autoWakeup').textContent='-';document.getElementById('autoResidual').textContent='-';return}
+  const gw=days.filter(d=>all[d].morning&&all[d].morning.goodWakeup).length;
+  const rs=days.filter(d=>all[d].daily&&all[d].daily.residualStool).length;
+  document.getElementById('autoWakeup').textContent=`${gw}日/${days.length}日（${Math.round(gw/days.length*100)}%）`;
+  document.getElementById('autoResidual').textContent=`${rs}日/${days.length}日（${Math.round(rs/days.length*100)}%）`;
+}
+
+// ===== REVIEW =====
+let rChart=null,mChart=null;
+const RL=[
+  {key:'morning.shower',lbl:'シャワー'},{key:'morning.hairOil',lbl:'ヘアオイル'},
+  {key:'morning.skincare',lbl:'朝スキンケア'},{key:'morning.supplements',lbl:'サプリ(朝)'},
+  {key:'morning.goodWakeup',lbl:'スッキリ起床'},{key:'afternoon.movedHourly',lbl:'1h体を動かした'},
+  {key:'afternoon.supplements',lbl:'サプリ(昼)'},{key:'evening.supplements',lbl:'サプリ(夜)'},
+  {key:'evening.faceWash',lbl:'洗顔'},{key:'evening.skincare',lbl:'夜スキンケア'},
+  {key:'daily.protein',lbl:'タンパク質'},{key:'daily.fiber',lbl:'食物繊維'},
+  {key:'daily.fermented',lbl:'発酵食品'},{key:'daily.intestineOil',lbl:'腸を潤す'},
+  {key:'daily.water2L',lbl:'水2L'},{key:'daily.exercise',lbl:'運動'},
+  {key:'daily.stool',lbl:'便あり'},{key:'daily.toiletOver5',lbl:'5分超トイレ'},
+];
+function monthRates(ym){
+  const all=ld(SK.d),days=Object.keys(all).filter(d=>d.startsWith(ym));
+  if(!days.length)return RL.map(()=>0);
+  return RL.map(({key})=>{
+    const eligible=key==='afternoon.movedHourly'?days.filter(d=>!(all[d].afternoon&&all[d].afternoon.dayType==='out')):days;
+    if(!eligible.length)return 0;
+    return Math.round(eligible.filter(d=>getNested(all[d],key)===true).length/eligible.length*100);
+  });
+}
+function condScore(ym){
+  const r=getMR(ym);if(!r||!Object.keys(r).length)return null;
+  const checks=[
+    {key:'skin.tightness',good:'none'},{key:'skin.elasticity',good:'yes'},{key:'skin.glow',good:'yes'},
+    {key:'skin.spots',good:'improved',mid:'same'},{key:'hair.softness',good:'yes'},{key:'hair.shine',good:'yes'},
+    {key:'hair.hairLoss',good:'decreased',mid:'same'},{key:'body.waist',good:'looser',mid:'same'},{key:'body.lightFeeling',good:'yes'},
+  ];
+  let sc=0,tot=0;
+  checks.forEach(({key,good,mid})=>{const v=getNested(r,key);if(v!=null){tot++;if(v===good)sc+=1;else if(mid&&v===mid)sc+=0.5;}});
+  return tot>0?Math.round(sc/tot*100):null;
+}
+function initReview(){renderPeriods();renderReview()}
+function renderPeriods(){
+  const all=ld(SK.d);
+  const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));
+  months.add(fmtYM(new Date()));
+  const sorted=Array.from(months).sort().reverse().slice(0,12);
+  document.getElementById('reviewPeriods').innerHTML=sorted.map(m=>{
+    const[yr,mo]=m.split('-');
+    return`<button class="pchip${m===reviewYM?' active':''}" onclick="selReviewM('${m}')">${yr}/${parseInt(mo)}</button>`;
+  }).join('');
+}
+function selReviewM(ym){reviewYM=ym;renderPeriods();renderReview()}
+function renderReview(){renderRChart();renderMChart();renderGap()}
+function renderRChart(){
+  const rates=monthRates(reviewYM);
+  if(rChart)rChart.destroy();
+  const ctx=document.getElementById('routineChart').getContext('2d');
+  rChart=new Chart(ctx,{type:'bar',data:{labels:RL.map(r=>r.lbl),datasets:[{data:rates,backgroundColor:rates.map(r=>r>=80?'#68B96A':r>=50?'#6B9FD4':'#E57373'),borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}%`}}},
+      scales:{x:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+function renderMChart(){
+  const all=ld(SK.d);const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));months.add(fmtYM(new Date()));
+  const sorted=Array.from(months).sort().slice(-6);
+  const acts=sorted.map(m=>{const r=monthRates(m);return r.length?Math.round(r.reduce((a,b)=>a+b,0)/r.length):0});
+  const conds=sorted.map(m=>condScore(m));
+  if(mChart)mChart.destroy();
+  const ctx=document.getElementById('monthlyChart').getContext('2d');
+  mChart=new Chart(ctx,{type:'line',data:{labels:sorted.map(m=>parseInt(m.split('-')[1])+'月'),datasets:[
+    {label:'行動達成率',data:acts,borderColor:'#6B9FD4',backgroundColor:'rgba(107,159,212,0.1)',tension:0.4,fill:true,pointRadius:4},
+    {label:'状態スコア',data:conds,borderColor:'#68B96A',backgroundColor:'rgba(104,185,106,0.1)',tension:0.4,fill:true,pointRadius:4,spanGaps:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?c.raw+'%':'データなし'}`}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+function renderGap(){
+  const all=ld(SK.d);const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));months.add(fmtYM(new Date()));
+  const sorted=Array.from(months).sort().slice(-4);
+  document.getElementById('gapViz').innerHTML=sorted.map(m=>{
+    const mo=parseInt(m.split('-')[1]);
+    const r=monthRates(m),act=r.length?Math.round(r.reduce((a,b)=>a+b,0)/r.length):0,cond=condScore(m);
+    const gap=cond!=null&&act>=70&&cond<act-20;
+    return`<div class="grow"><div class="glabs"><span>${mo}月</span><span>行動 ${act}% / 状態 ${cond!=null?cond+'%':'未入力'}${gap?' ⚠️ ギャップ':''}</span></div>
+      <div style="height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;margin-bottom:3px"><div style="height:100%;width:${act}%;background:var(--p);border-radius:4px"></div></div>
+      ${cond!=null?`<div style="height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden"><div style="height:100%;width:${cond}%;background:var(--gn);border-radius:4px"></div></div>`:`<div style="font-size:11px;color:#aaa;padding:2px 0">月1チェック未入力</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ===== EXPORT =====
+function exportData(){
+  const data={daily:ld(SK.d),monthly:ld(SK.m),settings:ld(SK.s),customItems:getCI(),exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`tracker_${fmtYM(new Date())}.json`;a.click();
+}
+
+// ===== UI HELPERS =====
+function showInfo(){document.getElementById('infoModal').classList.add('show')}
+function hideInfo(e){if(!e||e.target===document.getElementById('infoModal')||e.target.classList.contains('mdlg-close'))document.getElementById('infoModal').classList.remove('show')}
+let savedT=null;
+function showSaved(){
+  const el=document.getElementById('hdrSaved');el.classList.add('show');
+  if(savedT)clearTimeout(savedT);
+  savedT=setTimeout(()=>el.classList.remove('show'),2000);
+  const t=document.getElementById('toast');t.textContent='保存しました';t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),900);
+}
+function showSyncIndicator(on){
+  document.getElementById('hdrSync').classList.toggle('show',on);
+}
+
+// ===== NAV =====
+function switchTo(name){
+  curScreen=name;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen'+name).classList.add('active');
+  document.getElementById('nav'+name).classList.add('active');
+  if(name==='Review')setTimeout(renderReview,60);
+  if(name==='Monthly')renderMonthly();
+}
+</script>
+</body>
+</html>
