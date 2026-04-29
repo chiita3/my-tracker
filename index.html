@@ -45,13 +45,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .dnav{display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 0 6px}
 .dnb{width:38px;height:38px;border-radius:50%;border:1px solid var(--br);background:var(--card);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .dnl{font-size:15px;font-weight:600;min-width:120px;text-align:center}
-/* PROGRESS */
+/* SCORE CARD */
 .pcrd{background:var(--pl);border-radius:12px;padding:14px;margin-bottom:10px}
-.phdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.phdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .ptitle{font-size:13px;color:var(--p);font-weight:600}
-.ppct{font-size:24px;font-weight:700;color:var(--p)}
-.pbar{height:8px;background:#CBD5E0;border-radius:4px;overflow:hidden}
+.pscore{font-size:22px;font-weight:700;color:var(--p)}
+.pbar{height:8px;background:#CBD5E0;border-radius:4px;overflow:hidden;margin-bottom:8px}
 .pfill{height:100%;background:var(--p);border-radius:4px;transition:width .3s}
+.bonus-row{display:flex;gap:5px;flex-wrap:wrap}
+.bonus-chip{font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--br);background:rgba(255,255,255,.6);color:var(--txl)}
+.bonus-chip.gn{background:#F0FFF4;border-color:var(--gn);color:#276749;font-weight:600}
 /* SECTION */
 .sec{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden}
 .shdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -106,13 +109,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .astat{background:var(--pl);border-radius:8px;padding:12px}
 .arow{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
 .aval{font-weight:700;color:var(--p)}
-/* STAGE CARD (monthly) */
+/* STAGE CARD */
 .stage-info{background:var(--pl);border-radius:10px;padding:12px;margin-bottom:12px}
 .stage-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .sbadge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--bg);color:var(--txl);border:1px solid var(--br);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .sbadge.active{background:var(--p);color:#fff;border-color:var(--p)}
 .stage-goal{font-size:13px;color:var(--p);font-weight:600;margin-bottom:4px}
 .stage-note{font-size:11px;color:var(--txl)}
+/* WEEKLY EXERCISE */
+.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.week-col{background:var(--bg);border-radius:8px;padding:8px 4px;text-align:center}
+.week-lbl{font-size:11px;color:var(--txl);margin-bottom:4px}
+.week-count{font-size:18px;font-weight:700;line-height:1.2}
+.week-target{font-size:10px;color:var(--txl);margin-top:2px}
+.week-ok{color:var(--gn)}.week-ng{color:var(--rd)}.week-na{color:#aaa}
+/* ASSET */
+.asset-phase-bar{background:linear-gradient(135deg,#E8F1FA,#F0FFF4);border-radius:10px;padding:11px 12px;margin-bottom:10px}
+.asset-phase-lbl{font-size:12px;font-weight:700;color:var(--p);margin-bottom:4px}
+.asset-phase-sub{font-size:11px;color:var(--txl);line-height:1.6}
+.asset-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.asset-field{background:var(--bg);border-radius:8px;padding:9px 10px}
+.af-lbl{font-size:11px;color:var(--txl);margin-bottom:4px}
+.af-row{display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.af-inp{width:75px;border:none;outline:none;font-size:15px;font-weight:700;color:var(--tx);background:transparent;text-align:right}
+.af-unit{font-size:11px;color:var(--txl)}
+.af-diff{font-size:10px;margin-top:2px;text-align:right}
+.af-diff.ok{color:var(--gn)}.af-diff.ng{color:var(--rd)}
 /* CHARTS */
 .ccrd{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
 .ctit{font-size:15px;font-weight:700;margin-bottom:12px}
@@ -129,6 +151,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 .gleg{display:flex;gap:14px;margin-top:10px}
 .gli{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--txl)}
 .ld{width:10px;height:10px;border-radius:2px}
+/* GOALS SCREEN */
+.gtabs{display:flex;overflow-x:auto;border-bottom:2px solid var(--br);margin-bottom:10px}
+.gtabs::-webkit-scrollbar{display:none}
+.gtab{flex-shrink:0;padding:9px 13px;border:none;background:none;font-size:12px;font-weight:600;color:var(--txl);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.gtab.active{color:var(--p);border-bottom-color:var(--p)}
+.gpanel{display:none}.gpanel.active{display:block}
+.gblock{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px}
+.gblock-title{font-size:14px;font-weight:700;color:var(--p);margin-bottom:10px}
+.gitem{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--br);font-size:13px;line-height:1.6}
+.gitem:last-child{border-bottom:none}
+.gcat{font-size:11px;font-weight:700;color:var(--p);min-width:42px;padding-top:2px;flex-shrink:0}
+.year-badge{display:inline-block;background:var(--p);color:#fff;font-size:11px;font-weight:700;padding:2px 9px;border-radius:10px;margin-bottom:10px}
+.phase-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.phase-tbl th{background:var(--pl);color:var(--p);padding:6px 8px;text-align:left;font-weight:700}
+.phase-tbl td{padding:6px 8px;border-bottom:1px solid var(--br);vertical-align:top}
+.phase-tbl tr.cur td{background:#FFF8E1;font-weight:600}
 /* TOAST */
 .toast{position:fixed;bottom:calc(var(--nav) + 16px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.72);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
@@ -189,6 +227,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     <h3>💾 自動保存・同期について</h3>
     <p>入力はすべて即時・自動保存されます。同じGoogleアカウントでログインすれば全デバイスで同期されます。</p>
     <div class="tip">📱 スマホでこのURLを開いてGoogleログインするだけで同期が始まります。</div>
+    <h3>📊 スコアについて</h3>
+    <p>必須13項目＋条件項目（外出時・在宅時）の達成数がスコアです。ボーナスは睡眠・お酒・腸・間食・カフェインの5項目。</p>
   </div>
 </div>
 
@@ -202,23 +242,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     <div class="dnl" id="curDateLbl"></div>
     <button class="dnb" id="nextDay">›</button>
   </div>
+
+  <!-- Score Card -->
   <div class="pcrd">
-    <div class="phdr"><span class="ptitle">今日の達成率</span><span class="ppct" id="todayPct">0%</span></div>
+    <div class="phdr">
+      <span class="ptitle">今日のスコア <span style="font-size:11px;font-weight:400;color:var(--txl)">必須+条件</span></span>
+      <span class="pscore" id="todayScore">-</span>
+    </div>
     <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
+    <div class="bonus-row" id="bonusRow"></div>
   </div>
 
   <!-- 朝 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('morning')">
-      <span class="stit">☀️ 朝 <span class="sbdg" id="bdgMorning">0/6</span></span>
+      <span class="stit">☀️ 朝 <span class="sbdg" id="bdgMorning">0/2</span></span>
       <span class="sarr open" id="arrMorning">▼</span>
     </div>
     <div class="sbody" id="bodyMorning">
       <div class="ci"><div class="cl">顔水洗い・スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="morning.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">日焼け止め / 化粧<span class="hint">ONにすると夜にクレンジングが出ます</span></div><label class="tgl"><input type="checkbox" data-key="morning.sunscreen" onchange="onSunscreen(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">日焼け止め / 化粧<span class="hint">外出日はスコアに含まれます。ONにすると夜クレンジングが出ます</span></div><label class="tgl"><input type="checkbox" data-key="morning.sunscreen" onchange="onSunscreen(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="morning.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">スッキリ起きられたか</div><label class="tgl"><input type="checkbox" data-key="morning.goodWakeup" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">起床時間</div><input type="time" class="tinp" data-key="morning.wakeupTime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">スッキリ起きられたか<span class="hint">記録のみ（スコアに影響しません）</span></div><label class="tgl"><input type="checkbox" data-key="morning.goodWakeup" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">起床時間<span class="hint">睡眠7h+ボーナスの計算に使います</span></div><input type="time" class="tinp" data-key="morning.wakeupTime" onchange="ck(this)"></div>
       <div class="ci"><div class="cl">朝ご飯</div><select class="msel" data-key="morning.breakfast" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
     </div>
   </div>
@@ -226,12 +272,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 昼 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('afternoon')">
-      <span class="stit">🌤 昼 <span class="sbdg" id="bdgAfternoon">0/3</span></span>
+      <span class="stit">🌤 昼 <span class="sbdg" id="bdgAfternoon">0/2</span></span>
       <span class="sarr" id="arrAfternoon">▼</span>
     </div>
     <div class="sbody" id="bodyAfternoon" style="display:none">
       <div class="ci">
-        <div class="cl">今日の状況</div>
+        <div class="cl">今日の状況<span class="hint">外出日は「1時間移動」の代わりに日焼け止め・運動が条件項目</span></div>
         <div class="dt-grp">
           <button class="dt-btn" id="dt_work" onclick="setDayType('work')">仕事</button>
           <button class="dt-btn" id="dt_out" onclick="setDayType('out')">外出</button>
@@ -239,7 +285,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         </div>
       </div>
       <div class="ci" id="movedHourlyItem">
-        <div class="cl">1時間ごとに体を動かした</div>
+        <div class="cl">1時間ごとに体を動かした<span class="hint">在宅・仕事日のみ条件項目</span></div>
         <label class="tgl"><input type="checkbox" data-key="afternoon.movedHourly" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="afternoon.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
@@ -250,15 +296,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 夜 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('evening')">
-      <span class="stit">🌙 夜 <span class="sbdg" id="bdgEvening">0/5</span></span>
+      <span class="stit">🌙 夜 <span class="sbdg" id="bdgEvening">0/3</span></span>
       <span class="sarr" id="arrEvening">▼</span>
     </div>
     <div class="sbody" id="bodyEvening" style="display:none">
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="evening.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci" id="cleansingItem" style="display:none"><div class="cl">クレンジング</div><label class="tgl"><input type="checkbox" data-key="evening.cleansing" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci" id="cleansingItem" style="display:none"><div class="cl">クレンジング<span class="hint">外出・日焼け止め使用日の条件項目</span></div><label class="tgl"><input type="checkbox" data-key="evening.cleansing" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">洗顔</div><label class="tgl"><input type="checkbox" data-key="evening.faceWash" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="evening.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">就寝時間</div><input type="time" class="tinp" data-key="evening.bedtime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">就寝時間<span class="hint">睡眠7h+ボーナスの計算に使います</span></div><input type="time" class="tinp" data-key="evening.bedtime" onchange="ck(this)"></div>
       <div class="ci"><div class="cl">夜ご飯</div><select class="msel" data-key="evening.dinner" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
     </div>
   </div>
@@ -266,7 +312,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 1日まとめ -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('daily')">
-      <span class="stit">📋 1日まとめ <span class="sbdg" id="bdgDaily">0/13</span></span>
+      <span class="stit">📋 1日まとめ <span class="sbdg" id="bdgDaily">0/8</span></span>
       <span class="sarr" id="arrDaily">▼</span>
     </div>
     <div class="sbody" id="bodyDaily" style="display:none">
@@ -277,15 +323,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="ci"><div class="cl">腸を潤す食品を食べた<span class="hint">オリーブオイル・オクラ・なめこ・アボカド</span></div><label class="tgl"><input type="checkbox" data-key="daily.intestineOil" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">水分 2L以上飲んだ</div><label class="tgl"><input type="checkbox" data-key="daily.water2L" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci">
-        <div class="cl">運動・外出した<span class="hint" id="exerciseHint"></span></div>
+        <div class="cl">運動・外出した<span class="hint" id="exerciseHint">在宅・仕事日のみ条件項目</span></div>
         <label class="tgl"><input type="checkbox" data-key="daily.exercise" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
+      <div class="ci"><div class="cl">5分以内にトイレ終了<span class="hint">スムーズな排便が目標（必須項目）</span></div><label class="tgl"><input type="checkbox" data-key="daily.toiletTimer" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div style="padding:8px 0 4px;font-size:11px;color:var(--txl);font-weight:600">── 記録のみ（スコアに影響しません）──</div>
       <div class="ci"><div class="cl">便が出た</div><label class="tgl"><input type="checkbox" data-key="daily.stool" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">残便感があった<span class="hint">⚠ あると良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">出血があった<span class="hint">⚠ あると良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">トイレに5分以上いた<span class="hint">⚠ ONは良くない記録</span></div><label class="tgl bad"><input type="checkbox" data-key="daily.toiletOver5" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">お酒を飲んだ</div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">カフェタイム・間食あり</div><label class="tgl warn"><input type="checkbox" data-key="daily.cafeTime" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">残便感があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">出血があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">お酒を飲んだ<span class="hint">ボーナス「お酒なし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">間食あり<span class="hint">ボーナス「間食なし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.snack" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">カフェインあり<span class="hint">ボーナス「カフェインなし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.cafe" onchange="ck(this)"><span class="tsl"></span></label></div>
     </div>
   </div>
 
@@ -321,6 +369,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="stage-goal" id="mStageGoal"></div>
       <div class="stage-note" id="mStageNote"></div>
     </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:var(--txl);margin-bottom:4px">今月の週別 運動日数</div>
+      <div class="week-grid" id="weekGrid"></div>
+    </div>
     <div class="mi" id="stageClearSection">
       <div class="mil">今月の目標をクリアできましたか？</div>
       <button class="btn btn-gn btn-sm" onclick="confirmStageAdvance()">✓ 今月クリアした！</button>
@@ -332,8 +384,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     <div class="mstit">📊 今月の自動集計</div>
     <div class="astat">
       <div class="arow"><span>スッキリ起きられた日</span><span class="aval" id="autoWakeup">-</span></div>
+      <div class="arow"><span>運動した日</span><span class="aval" id="autoExercise">-</span></div>
       <div class="arow"><span>残便感があった日</span><span class="aval" id="autoResidual">-</span></div>
+      <div class="arow"><span>お酒なし日</span><span class="aval" id="autoNoAlcohol">-</span></div>
     </div>
+  </div>
+
+  <!-- 資産管理 -->
+  <div class="msec">
+    <div class="mstit">💴 資産管理</div>
+    <div class="asset-phase-bar" id="assetPhaseBar"></div>
+    <div class="asset-fields" id="assetFields"></div>
   </div>
 
   <!-- 肌 -->
@@ -376,6 +437,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     <div class="ctit">📈 月1チェックの推移</div>
     <div style="position:relative;height:240px"><canvas id="monthlyChart"></canvas></div>
   </div>
+  <div class="ccrd">
+    <div class="ctit">💴 資産推移</div>
+    <div style="position:relative;height:220px"><canvas id="assetChart"></canvas></div>
+  </div>
   <div class="gcrd">
     <div class="gtit">🔍 行動 vs 状態のギャップ</div>
     <div class="gsub">行動はできているのに状態が変わっていない場合に注目</div>
@@ -390,11 +455,137 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   </div>
 </div>
 
+<!-- ===== GOALS ===== -->
+<div class="screen" id="screenGoals">
+  <div style="padding-top:8px">
+    <div class="gtabs" id="goalsTabs">
+      <button class="gtab active" onclick="switchGoalsTab('vision')">ありたい姿</button>
+      <button class="gtab" onclick="switchGoalsTab('criteria3y')">3年後基準</button>
+      <button class="gtab" onclick="switchGoalsTab('criteria26')">2026年末</button>
+      <button class="gtab" onclick="switchGoalsTab('income')">収入逆算</button>
+      <button class="gtab" onclick="switchGoalsTab('health')">健康逆算</button>
+    </div>
+
+    <!-- ありたい姿 -->
+    <div class="gpanel active" id="gpanel-vision">
+      <div class="gblock">
+        <div class="gblock-title">🌟 3年後のありたい姿（2029年4月）</div>
+        <div class="gitem"><span class="gcat">健康</span><span>腸が健康で毎日快便。肌・髪がきれいで、体が軽く動きやすい状態</span></div>
+        <div class="gitem"><span class="gcat">経済</span><span>副業収入が安定し、貯蓄・NISAが着実に積み上がっている状態</span></div>
+        <div class="gitem"><span class="gcat">生活</span><span>運動が習慣化し、自分のペースで整えながら働けている状態</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">💡 この3年でやること</div>
+        <div class="gitem"><span class="gcat">習慣</span><span>スキンケア・ヘアケア・サプリ・食事管理を毎日継続する</span></div>
+        <div class="gitem"><span class="gcat">運動</span><span>ステージ1→2→3と段階的に運動量を増やす</span></div>
+        <div class="gitem"><span class="gcat">腸活</span><span>食物繊維・発酵食品・水分2L・腸を潤す食品を毎日摂る</span></div>
+        <div class="gitem"><span class="gcat">資産</span><span>NISA・iDeCoを継続しながら副業収入を育てる</span></div>
+        <div class="gitem"><span class="gcat">記録</span><span>このアプリで毎日記録し、月1チェックで振り返る</span></div>
+      </div>
+    </div>
+
+    <!-- 3年後OK基準 -->
+    <div class="gpanel" id="gpanel-criteria3y">
+      <div class="gblock">
+        <div class="year-badge">2029年4月 達成基準</div>
+        <div class="gblock-title">✨ 美容・健康</div>
+        <div class="gitem"><span class="gcat">腸</span><span>毎日快便（残便感・出血なし）、5分以内終了が習慣化</span></div>
+        <div class="gitem"><span class="gcat">肌</span><span>つっぱりなし・ハリ・ツヤあり。シミ・毛穴が改善傾向</span></div>
+        <div class="gitem"><span class="gcat">髪</span><span>艶・柔らかさあり、抜け毛が減少している</span></div>
+        <div class="gitem"><span class="gcat">体型</span><span>ウエスト感覚ゆるい・体が軽いと感じる</span></div>
+        <div class="gitem"><span class="gcat">運動</span><span>ステージ3：週2〜3回の運動が継続できている</span></div>
+        <div class="gitem"><span class="gcat">睡眠</span><span>7時間以上睡眠が月の半分以上達成</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">💴 財務</div>
+        <div class="gitem"><span class="gcat">副業</span><span>月3万円以上の副業収入が安定している</span></div>
+        <div class="gitem"><span class="gcat">貯蓄</span><span>貯蓄残高 300万円以上</span></div>
+        <div class="gitem"><span class="gcat">NISA</span><span>年間120万円積立継続中（2026年から累計360万円超）</span></div>
+        <div class="gitem"><span class="gcat">iDeCo</span><span>月2.3万円積立継続中</span></div>
+        <div class="gitem"><span class="gcat">備え</span><span>医療費バッファ 50万円以上確保</span></div>
+      </div>
+    </div>
+
+    <!-- 2026年末OK基準 -->
+    <div class="gpanel" id="gpanel-criteria26">
+      <div class="gblock">
+        <div class="year-badge">2026年12月末 達成基準</div>
+        <div class="gblock-title">🏃 運動・習慣</div>
+        <div class="gitem"><span class="gcat">運動</span><span>ステージ3（週2〜3回運動）に到達・定着</span></div>
+        <div class="gitem"><span class="gcat">習慣</span><span>必須13項目の月平均スコア 80%以上</span></div>
+        <div class="gitem"><span class="gcat">腸</span><span>残便感・出血なし日が月の80%以上</span></div>
+        <div class="gitem"><span class="gcat">睡眠</span><span>7時間睡眠ボーナスが月15日以上</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">💴 財務</div>
+        <div class="gitem"><span class="gcat">副業</span><span>月1万円以上の副業収入を達成</span></div>
+        <div class="gitem"><span class="gcat">貯蓄</span><span>貯蓄残高 100万円以上</span></div>
+        <div class="gitem"><span class="gcat">NISA</span><span>年間120万円積立継続（累計120万円）</span></div>
+        <div class="gitem"><span class="gcat">iDeCo</span><span>月2.3万円積立継続</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">✨ 美容</div>
+        <div class="gitem"><span class="gcat">肌</span><span>つっぱりが改善傾向、ハリ・ツヤが感じられる</span></div>
+        <div class="gitem"><span class="gcat">髪</span><span>手触りが柔らかくなり、艶が出てきた</span></div>
+      </div>
+    </div>
+
+    <!-- 収入逆算 -->
+    <div class="gpanel" id="gpanel-income">
+      <div class="gblock">
+        <div class="gblock-title">💰 副業収入 ロードマップ</div>
+        <table class="phase-tbl">
+          <tr><th>時期</th><th>フェーズ</th><th>副業収入/月</th></tr>
+          <tr><td>2026前半</td><td>土台づくり</td><td>〜5,000円</td></tr>
+          <tr><td>2026後半</td><td>初収益</td><td>〜1万円</td></tr>
+          <tr><td>2027年</td><td>安定化</td><td>〜3万円</td></tr>
+          <tr><td>2028年</td><td>成長</td><td>〜5万円</td></tr>
+          <tr><td>2029年</td><td>目標達成</td><td>3万円以上安定</td></tr>
+        </table>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">💴 資産形成 フェーズ目標</div>
+        <div style="overflow-x:auto">
+          <table class="phase-tbl">
+            <thead><tr><th>年</th><th>貯蓄</th><th>NISA累計</th><th>iDeCo累計</th><th>医療備え</th></tr></thead>
+            <tbody id="assetPhaseTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 健康逆算 -->
+    <div class="gpanel" id="gpanel-health">
+      <div class="gblock">
+        <div class="gblock-title">🏃 運動ステージ ロードマップ</div>
+        <div class="gitem"><span class="gcat">S1</span><span>予定のない日に外出する習慣をつける（今すぐ開始）</span></div>
+        <div class="gitem"><span class="gcat">S2</span><span>週2回以上の外出・軽い運動（2026年中頃を目安）</span></div>
+        <div class="gitem"><span class="gcat">S3</span><span>週2〜3回の本格的な運動（2026年末〜継続）</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">🌱 腸活 ロードマップ</div>
+        <div class="gitem"><span class="gcat">今</span><span>食物繊維・発酵食品・水2L・腸を潤す食品を毎日摂る</span></div>
+        <div class="gitem"><span class="gcat">3ヶ月</span><span>残便感・出血が減り始める。5分以内トイレが増える</span></div>
+        <div class="gitem"><span class="gcat">6ヶ月</span><span>毎日快便が定着。腸の調子が安定してくる</span></div>
+        <div class="gitem"><span class="gcat">1年+</span><span>肌・髪・体重にも腸活の効果が現れ始める</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">✨ 美容 ロードマップ</div>
+        <div class="gitem"><span class="gcat">今</span><span>スキンケア・ヘアケアルーティンを毎日継続する</span></div>
+        <div class="gitem"><span class="gcat">3ヶ月</span><span>肌のつっぱり改善・髪の手触りに変化が出始める</span></div>
+        <div class="gitem"><span class="gcat">6ヶ月</span><span>ハリ・ツヤ・艶が感じられるようになる</span></div>
+        <div class="gitem"><span class="gcat">1年+</span><span>シミ・毛穴・抜け毛の改善傾向が月チェックで確認できる</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /main -->
 <nav class="bnav">
   <button class="nb active" id="navHome" onclick="switchTo('Home')"><span class="ic">🏠</span><span>今日</span></button>
   <button class="nb" id="navMonthly" onclick="switchTo('Monthly')"><span class="ic">📅</span><span>月チェック</span></button>
   <button class="nb" id="navReview" onclick="switchTo('Review')"><span class="ic">📈</span><span>振り返り</span></button>
+  <button class="nb" id="navGoals" onclick="switchTo('Goals')"><span class="ic">🎯</span><span>目標</span></button>
 </nav>
 </div><!-- /appRoot -->
 
@@ -499,12 +690,25 @@ function emptyDR(){return{
   morning:{skincare:false,sunscreen:false,supplements:false,goodWakeup:false,wakeupTime:'',breakfast:''},
   afternoon:{dayType:'',movedHourly:false,supplements:false,lunch:''},
   evening:{supplements:false,cleansing:false,faceWash:false,skincare:false,bedtime:'',dinner:''},
-  daily:{hairDry:false,protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,stool:false,residualStool:false,bleeding:false,toiletOver5:false,alcohol:false,cafeTime:false},
+  daily:{hairDry:false,protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,toiletTimer:false,stool:false,residualStool:false,bleeding:false,alcohol:false,snack:false,cafe:false},
   custom:{}
 }}
 function mergeDR(s){
   const d=emptyDR();
-  return{morning:{...d.morning,...(s.morning||{})},afternoon:{...d.afternoon,...(s.afternoon||{})},evening:{...d.evening,...(s.evening||{})},daily:{...d.daily,...(s.daily||{})},custom:{...(s.custom||{})}};
+  const daily={...d.daily,...(s.daily||{})};
+  // Migration: cafeTime → cafe + snack (split)
+  if(s.daily&&s.daily.cafeTime!==undefined){
+    if(daily.cafe===false)daily.cafe=!!s.daily.cafeTime;
+    if(daily.snack===false)daily.snack=!!s.daily.cafeTime;
+  }
+  // toiletOver5 (old bad-framing) is dropped — different concept
+  return{
+    morning:{...d.morning,...(s.morning||{})},
+    afternoon:{...d.afternoon,...(s.afternoon||{})},
+    evening:{...d.evening,...(s.evening||{})},
+    daily,
+    custom:{...(s.custom||{})}
+  };
 }
 
 // ===== HELPERS =====
@@ -516,7 +720,55 @@ function getNested(o,p){return p.split('.').reduce((c,k)=>c==null?undefined:c[k]
 function setNested(o,p,v){const ps=p.split('.');let c=o;for(let i=0;i<ps.length-1;i++){if(!c[ps[i]])c[ps[i]]={};c=c[ps[i]]}c[ps[ps.length-1]]=v}
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML}
 
-const STAGE_DESCS={1:'ステージ1: 予定のない日に外出',2:'ステージ2: 週2回外出',3:'ステージ3: 週2〜3回運動'};
+const STAGE_DESCS={1:'予定のない日に外出',2:'週2回外出',3:'週2〜3回運動'};
+const STAGE_GOALS={1:'目標: 予定のない日に外出する',2:'目標: 週2回以上外出・軽運動',3:'目標: 週2〜3回本格運動'};
+const STAGE_WEEK_TARGET={1:1,2:2,3:2};
+
+// ===== SCORE =====
+function calcScore(r){
+  const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
+  const isOut=a.dayType==='out';
+
+  // Must-do 13 items (always counted)
+  const mustArr=[d.hairDry,m.skincare,m.supplements,a.supplements,e.supplements,e.faceWash,e.skincare,d.protein,d.fiber,d.fermented,d.intestineOil,d.water2L,d.toiletTimer];
+  const mustDone=mustArr.filter(Boolean).length;
+
+  // Conditional items (counted only when applicable)
+  const conds=[];
+  if(isOut){
+    conds.push(!!m.sunscreen);
+    if(m.sunscreen)conds.push(!!e.cleansing);
+  } else {
+    conds.push(!!a.movedHourly);
+    conds.push(!!d.exercise);
+  }
+  const condDone=conds.filter(Boolean).length;
+  const condTotal=conds.length;
+
+  // Sleep hours from wakeupTime + bedtime
+  let sleepOk=false;
+  if(m.wakeupTime&&e.bedtime){
+    const[wh,wm]=m.wakeupTime.split(':').map(Number);
+    const[bh,bm]=e.bedtime.split(':').map(Number);
+    const wake=wh*60+wm,bed=bh*60+bm;
+    // bed before midnight, wake after → typical night sleep
+    const diff=bed<=wake?(wake-bed):(24*60-bed+wake);
+    sleepOk=diff>=420; // 7 hours = 420 min
+  }
+
+  // Plus items (5 bonus)
+  const plusItems=[
+    {label:'睡眠7h+',icon:'😴',done:sleepOk},
+    {label:'お酒なし',icon:'🍵',done:!d.alcohol},
+    {label:'快腸',icon:'✨',done:!!(d.stool&&!d.residualStool)},
+    {label:'間食なし',icon:'🥗',done:!d.snack},
+    {label:'Caffなし',icon:'🌿',done:!d.cafe},
+  ];
+  const plusDone=plusItems.filter(x=>x.done).length;
+
+  return{mustDone,mustTotal:13,condDone,condTotal,plusDone,plusTotal:5,plusItems,
+    total:mustDone+condDone,totalMax:13+condTotal};
+}
 
 // ===== STATE =====
 let curDate=new Date(),curMonth=new Date(),reviewYM=fmtYM(new Date());
@@ -564,50 +816,37 @@ function updateDayTypeUI(r){
 function updateExerciseHint(){
   const st=getS().exerciseStage||1;
   const el=document.getElementById('exerciseHint');
-  if(el)el.textContent='目標: '+STAGE_DESCS[st];
-}
-
-function countItems(r){
-  let tot=0,done=0;
-  const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
-  // morning: 4 bool + time + select = 6
-  ['skincare','sunscreen','supplements','goodWakeup'].forEach(k=>{tot++;if(m[k])done++});
-  tot++;if(m.wakeupTime)done++;tot++;if(m.breakfast)done++;
-  // afternoon
-  if(a.dayType!=='out'){tot++;if(a.movedHourly)done++}
-  tot++;if(a.supplements)done++;tot++;if(a.lunch)done++;
-  // evening
-  ['supplements','faceWash','skincare'].forEach(k=>{tot++;if(e[k])done++});
-  if(m.sunscreen){tot++;if(e.cleansing)done++}
-  tot++;if(e.bedtime)done++;tot++;if(e.dinner)done++;
-  // daily: 13 items
-  ['hairDry','protein','fiber','fermented','intestineOil','water2L','exercise','stool','residualStool','bleeding','toiletOver5','alcohol','cafeTime'].forEach(k=>{tot++;if(d[k])done++});
-  getCI().forEach(it=>{tot++;if((r.custom||{})[it.id])done++});
-  return{tot,done};
+  if(el)el.textContent='目標: '+STAGE_DESCS[st]+'（在宅・仕事日のみ条件項目）';
 }
 function updateProg(r){
-  const{tot,done}=countItems(r);
-  const pct=tot>0?Math.round(done/tot*100):0;
-  document.getElementById('todayPct').textContent=pct+'%';
+  const sc=calcScore(r);
+  const pct=sc.totalMax>0?Math.round(sc.total/sc.totalMax*100):0;
+  document.getElementById('todayScore').textContent=`${sc.total}/${sc.totalMax}`;
   document.getElementById('pfill').style.width=pct+'%';
+  // Bonus chips
+  const el=document.getElementById('bonusRow');
+  if(el)el.innerHTML=sc.plusItems.map(p=>`<span class="bonus-chip${p.done?' gn':''}">${p.icon}${p.label}</span>`).join('');
   updateBadges(r);
 }
 function updateBadges(r){
   const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
-  // morning badge /6
-  const mc=['skincare','sunscreen','supplements','goodWakeup'].filter(k=>m[k]).length+(m.wakeupTime?1:0)+(m.breakfast?1:0);
-  document.getElementById('bdgMorning').textContent=mc+'/6';
-  // afternoon badge
-  let at=2,ac=(a.supplements?1:0)+(a.lunch?1:0);
-  if(a.dayType!=='out'){at++;if(a.movedHourly)ac++}
-  document.getElementById('bdgAfternoon').textContent=ac+'/'+at;
-  // evening badge
-  let et=5,ec=['supplements','faceWash','skincare'].filter(k=>e[k]).length+(e.bedtime?1:0)+(e.dinner?1:0);
-  if(m.sunscreen){et++;if(e.cleansing)ec++}
-  document.getElementById('bdgEvening').textContent=ec+'/'+et;
-  // daily badge /13
-  const dc=['hairDry','protein','fiber','fermented','intestineOil','water2L','exercise','stool','residualStool','bleeding','toiletOver5','alcohol','cafeTime'].filter(k=>d[k]).length;
-  document.getElementById('bdgDaily').textContent=dc+'/13';
+  const isOut=a.dayType==='out';
+  // Morning: skincare(M)+supplements(M) always; sunscreen(C) if isOut
+  const mDone=(m.skincare?1:0)+(m.supplements?1:0)+(isOut&&m.sunscreen?1:0);
+  const mTot=2+(isOut?1:0);
+  document.getElementById('bdgMorning').textContent=mDone+'/'+mTot;
+  // Afternoon: supplements(M); movedHourly(C) if !isOut
+  const aDone=(a.supplements?1:0)+(!isOut&&a.movedHourly?1:0);
+  const aTot=1+(!isOut?1:0);
+  document.getElementById('bdgAfternoon').textContent=aDone+'/'+aTot;
+  // Evening: supplements(M)+faceWash(M)+skincare(M); cleansing(C) if isOut&&sunscreen
+  const eDone=(e.supplements?1:0)+(e.faceWash?1:0)+(e.skincare?1:0)+(isOut&&m.sunscreen&&e.cleansing?1:0);
+  const eTot=3+(isOut&&m.sunscreen?1:0);
+  document.getElementById('bdgEvening').textContent=eDone+'/'+eTot;
+  // Daily: hairDry+protein+fiber+fermented+intestineOil+water2L+toiletTimer(M 7); exercise(C) if !isOut
+  const dDone=(d.hairDry?1:0)+(d.protein?1:0)+(d.fiber?1:0)+(d.fermented?1:0)+(d.intestineOil?1:0)+(d.water2L?1:0)+(d.toiletTimer?1:0)+(!isOut&&d.exercise?1:0);
+  const dTot=7+(!isOut?1:0);
+  document.getElementById('bdgDaily').textContent=dDone+'/'+dTot;
   const ci=getCI(),cr=r.custom||{};
   document.getElementById('bdgCustom').textContent=ci.filter(i=>cr[i.id]).length+'/'+ci.length;
 }
@@ -660,6 +899,28 @@ const MF={
   body_light:{key:'body.lightFeeling',opts:[{v:'yes',l:'はい'},{v:'no',l:'いいえ',bad:true}]},
   income_uco:{key:'income.ucoProgress',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし'}]}
 };
+
+// Asset phase definitions
+const ASSET_PHASES=[
+  {year:2026,label:'2026年',savings:100,nisa:120,ideco:28,care:10},
+  {year:2027,label:'2027年',savings:180,nisa:240,ideco:56,care:20},
+  {year:2028,label:'2028年',savings:250,nisa:360,ideco:84,care:35},
+  {year:2029,label:'2029年+',savings:300,nisa:480,ideco:110,care:50},
+];
+const ASSET_FIELDS=[
+  {key:'salary',label:'月収（手取り）',unit:'万円',phaseKey:null},
+  {key:'sideIncome',label:'副業収入/月',unit:'万円',phaseKey:null},
+  {key:'savings',label:'貯蓄残高',unit:'万円',phaseKey:'savings'},
+  {key:'nisa',label:'NISA残高',unit:'万円',phaseKey:'nisa'},
+  {key:'ideco',label:'iDeCo残高',unit:'万円',phaseKey:'ideco'},
+  {key:'careBuffer',label:'医療費バッファ',unit:'万円',phaseKey:'care'},
+];
+
+function getCurrentPhase(){
+  const yr=new Date().getFullYear();
+  return ASSET_PHASES.find(p=>p.year>=yr)||ASSET_PHASES[ASSET_PHASES.length-1];
+}
+
 function initMonthly(){
   document.getElementById('prevMonth').onclick=()=>{curMonth.setMonth(curMonth.getMonth()-1);renderMonthly()};
   document.getElementById('nextMonth').onclick=()=>{curMonth.setMonth(curMonth.getMonth()+1);renderMonthly()};
@@ -678,14 +939,14 @@ function renderMonthly(){
   const ia=document.getElementById('income_amount');
   if(ia)ia.value=getNested(r,'income.amount')||'';
   autoStats(ym);
+  renderAssetSection(ym);
 }
 
-// 運動ステージ（月チェック内）
+// 運動ステージ
 function renderMonthlyStage(){
   const s=getS(),st=s.exerciseStage||1;
-  const goals={1:'目標: 予定のない日に外出する',2:'目標: 週2回外出する',3:'目標: 週2〜3回運動する'};
   document.getElementById('mStageBadges').innerHTML=[1,2,3].map(n=>`<span class="sbadge${n===st?' active':''}" onclick="setStage(${n})">ステージ${n}</span>`).join('');
-  document.getElementById('mStageGoal').textContent=goals[st]||'';
+  document.getElementById('mStageGoal').textContent=STAGE_GOALS[st]||'';
   const clearSec=document.getElementById('stageClearSection');
   if(st>=3){
     document.getElementById('mStageNote').textContent='🎉 最高ステージ達成中！';
@@ -694,15 +955,93 @@ function renderMonthlyStage(){
     document.getElementById('mStageNote').textContent='';
     if(clearSec)clearSec.style.display='block';
   }
+  renderWeeklyExercise(fmtYM(curMonth));
 }
 function setStage(n){const s=getS();s.exerciseStage=n;setS(s);renderMonthlyStage();updateExerciseHint();showSaved()}
 function confirmStageAdvance(){
   const s=getS(),st=s.exerciseStage||1;
   if(st>=3)return;
-  if(confirm(`ステージ${st}をクリア！\nステージ${st+1}に進みますか？\n\n（ステージ${st+1}: ${Object.values(STAGE_DESCS)[st]}）`)){
+  if(confirm(`ステージ${st}をクリア！\nステージ${st+1}に進みますか？\n\n（ステージ${st+1}: ${STAGE_DESCS[st+1]}）`)){
     s.exerciseStage=st+1;setS(s);renderMonthlyStage();updateExerciseHint();
     showSaved();toast('🎉 ステージ'+(st+1)+'に進みました！');
   }
+}
+
+// 週別運動集計
+function renderWeeklyExercise(ym){
+  const all=ld(SK.d);
+  const[yr,mo]=ym.split('-').map(Number);
+  const daysInMonth=new Date(yr,mo,0).getDate();
+  const st=getS().exerciseStage||1;
+  const target=STAGE_WEEK_TARGET[st]||1;
+  const today=new Date();
+
+  const weeks=[];
+  for(let w=0;w<4;w++){
+    const start=w*7+1;
+    const end=Math.min(start+6,daysInMonth);
+    let exDays=0,recordedDays=0;
+    for(let day=start;day<=end;day++){
+      const key=`${ym}-${String(day).padStart(2,'0')}`;
+      const rec=all[key];
+      if(rec){recordedDays++;if(rec.daily&&rec.daily.exercise)exDays++;}
+    }
+    const weekEnd=new Date(yr,mo-1,end);
+    const isPast=weekEnd<today;
+    weeks.push({w:w+1,exDays,recordedDays,target,isPast});
+  }
+
+  const el=document.getElementById('weekGrid');
+  if(!el)return;
+  el.innerHTML=weeks.map(wk=>{
+    let cls='week-na',icon='…';
+    if(wk.isPast&&wk.recordedDays>0){
+      if(wk.exDays>=wk.target){cls='week-ok';icon='✓';}
+      else{cls='week-ng';icon='✗';}
+    }
+    return`<div class="week-col">
+      <div class="week-lbl">第${wk.w}週</div>
+      <div class="week-count ${cls}">${wk.exDays}日</div>
+      <div class="week-target">目標${wk.target}日 ${icon}</div>
+    </div>`;
+  }).join('');
+}
+
+// 資産管理セクション
+function renderAssetSection(ym){
+  const r=getMR(ym);
+  const phase=getCurrentPhase();
+  const phaseEl=document.getElementById('assetPhaseBar');
+  if(phaseEl){
+    phaseEl.innerHTML=`<div class="asset-phase-lbl">📍 現在フェーズ: ${phase.label}</div>
+      <div class="asset-phase-sub">貯蓄目標 <b>${phase.savings}万円</b> ／ NISA累計目標 <b>${phase.nisa}万円</b><br>iDeCo累計目標 <b>${phase.ideco}万円</b> ／ 医療備え <b>${phase.care}万円</b></div>`;
+  }
+  const fieldsEl=document.getElementById('assetFields');
+  if(!fieldsEl)return;
+  const asset=r.asset||{};
+  fieldsEl.innerHTML=ASSET_FIELDS.map(f=>{
+    const val=asset[f.key]!=null?asset[f.key]:'';
+    let diffHtml='';
+    if(f.phaseKey&&val!==''){
+      const tgt=phase[f.phaseKey];
+      const diff=parseFloat(val)-tgt;
+      const cls=diff>=0?'ok':'ng';
+      const sign=diff>=0?'+':'';
+      diffHtml=`<div class="af-diff ${cls}">目標差 ${sign}${diff.toFixed(1)}万</div>`;
+    }
+    return`<div class="asset-field">
+      <div class="af-lbl">${f.label}</div>
+      <div class="af-row"><input type="number" class="af-inp" value="${val}" placeholder="0" oninput="saveAsset('${f.key}',this.value)"><span class="af-unit">${f.unit}</span></div>
+      ${diffHtml}
+    </div>`;
+  }).join('');
+}
+function saveAsset(key,val){
+  const ym=fmtYM(curMonth),r=getMR(ym);
+  if(!r.asset)r.asset={};
+  r.asset[key]=val===''?'':parseFloat(val);
+  setMR(ym,r);showSaved();
+  renderAssetSection(ym);
 }
 
 function selMO(fid,val,btn,isBad){
@@ -716,25 +1055,33 @@ function selMO(fid,val,btn,isBad){
 function saveMF(key,val){const ym=fmtYM(curMonth),r=getMR(ym);setNested(r,key,val);setMR(ym,r);showSaved()}
 function autoStats(ym){
   const all=ld(SK.d),days=Object.keys(all).filter(d=>d.startsWith(ym));
-  if(!days.length){document.getElementById('autoWakeup').textContent='-';document.getElementById('autoResidual').textContent='-';return}
+  if(!days.length){
+    ['autoWakeup','autoExercise','autoResidual','autoNoAlcohol'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='-';});
+    return;
+  }
+  const n=days.length;
   const gw=days.filter(d=>all[d].morning&&all[d].morning.goodWakeup).length;
+  const ex=days.filter(d=>all[d].daily&&all[d].daily.exercise).length;
   const rs=days.filter(d=>all[d].daily&&all[d].daily.residualStool).length;
-  document.getElementById('autoWakeup').textContent=`${gw}日/${days.length}日（${Math.round(gw/days.length*100)}%）`;
-  document.getElementById('autoResidual').textContent=`${rs}日/${days.length}日（${Math.round(rs/days.length*100)}%）`;
+  const na=days.filter(d=>all[d].daily&&!all[d].daily.alcohol).length;
+  const pct=v=>Math.round(v/n*100);
+  document.getElementById('autoWakeup').textContent=`${gw}日/${n}日（${pct(gw)}%）`;
+  document.getElementById('autoExercise').textContent=`${ex}日/${n}日（${pct(ex)}%）`;
+  document.getElementById('autoResidual').textContent=`${rs}日/${n}日（${pct(rs)}%）`;
+  document.getElementById('autoNoAlcohol').textContent=`${na}日/${n}日（${pct(na)}%）`;
 }
 
 // ===== REVIEW =====
-let rChart=null,mChart=null;
+let rChart=null,mChart=null,aChart=null;
 const RL=[
   {key:'morning.skincare',lbl:'朝スキンケア'},{key:'morning.supplements',lbl:'サプリ(朝)'},
-  {key:'morning.goodWakeup',lbl:'スッキリ起床'},{key:'afternoon.movedHourly',lbl:'1h体を動かした'},
   {key:'afternoon.supplements',lbl:'サプリ(昼)'},{key:'evening.supplements',lbl:'サプリ(夜)'},
   {key:'evening.faceWash',lbl:'洗顔'},{key:'evening.skincare',lbl:'夜スキンケア'},
   {key:'daily.hairDry',lbl:'ヘアケア'},{key:'daily.protein',lbl:'タンパク質'},
   {key:'daily.fiber',lbl:'食物繊維'},{key:'daily.fermented',lbl:'発酵食品'},
   {key:'daily.intestineOil',lbl:'腸を潤す'},{key:'daily.water2L',lbl:'水2L'},
-  {key:'daily.exercise',lbl:'運動'},{key:'daily.stool',lbl:'便あり'},
-  {key:'daily.toiletOver5',lbl:'5分超トイレ'},
+  {key:'daily.exercise',lbl:'運動'},{key:'daily.toiletTimer',lbl:'5分内トイレ'},
+  {key:'daily.stool',lbl:'便あり'},
 ];
 function monthRates(ym){
   const all=ld(SK.d),days=Object.keys(all).filter(d=>d.startsWith(ym));
@@ -766,7 +1113,7 @@ function renderPeriods(){
   }).join('');
 }
 function selReviewM(ym){reviewYM=ym;renderPeriods();renderReview()}
-function renderReview(){renderRChart();renderMChart();renderGap()}
+function renderReview(){renderRChart();renderMChart();renderAssetChart();renderGap()}
 function renderRChart(){
   const rates=monthRates(reviewYM);
   if(rChart)rChart.destroy();
@@ -788,6 +1135,31 @@ function renderMChart(){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?c.raw+'%':'データなし'}`}}},
       scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
 }
+function renderAssetChart(){
+  const allM=ld(SK.m);
+  const months=Object.keys(allM).sort().slice(-12);
+  if(aChart){aChart.destroy();aChart=null;}
+  const savData=months.map(m=>(allM[m].asset&&allM[m].asset.savings!=null)?Number(allM[m].asset.savings):null);
+  const nisData=months.map(m=>(allM[m].asset&&allM[m].asset.nisa!=null)?Number(allM[m].asset.nisa):null);
+  const hasData=savData.some(v=>v!=null)||nisData.some(v=>v!=null);
+  if(!hasData){
+    const ctx=document.getElementById('assetChart').getContext('2d');
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    ctx.fillStyle='#aaa';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('資産データを月チェックで入力すると表示されます',ctx.canvas.width/2,ctx.canvas.height/2);
+    return;
+  }
+  const ctx=document.getElementById('assetChart').getContext('2d');
+  aChart=new Chart(ctx,{type:'line',data:{
+    labels:months.map(m=>parseInt(m.split('-')[1])+'月'),
+    datasets:[
+      {label:'貯蓄',data:savData,borderColor:'#6B9FD4',backgroundColor:'rgba(107,159,212,0.1)',tension:0.4,fill:true,pointRadius:4,spanGaps:true},
+      {label:'NISA',data:nisData,borderColor:'#68B96A',backgroundColor:'rgba(104,185,106,0.1)',tension:0.4,fill:true,pointRadius:4,spanGaps:true},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?c.raw+'万円':'未入力'}`}}},
+      scales:{y:{ticks:{callback:v=>v+'万',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
 function renderGap(){
   const all=ld(SK.d);const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));months.add(fmtYM(new Date()));
   const sorted=Array.from(months).sort().slice(-4);
@@ -800,6 +1172,28 @@ function renderGap(){
       ${cond!=null?`<div style="height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden"><div style="height:100%;width:${cond}%;background:var(--gn);border-radius:4px"></div></div>`:`<div style="font-size:11px;color:#aaa;padding:2px 0">月1チェック未入力</div>`}
     </div>`;
   }).join('');
+}
+
+// ===== GOALS =====
+let curGoalsTab='vision';
+function switchGoalsTab(tab){
+  curGoalsTab=tab;
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.gpanel').forEach(p=>p.classList.remove('active'));
+  const tabs=['vision','criteria3y','criteria26','income','health'];
+  const idx=tabs.indexOf(tab);
+  if(idx>=0)document.querySelectorAll('.gtab')[idx].classList.add('active');
+  const panel=document.getElementById('gpanel-'+tab);
+  if(panel)panel.classList.add('active');
+  if(tab==='income')renderAssetPhaseTable();
+}
+function renderAssetPhaseTable(){
+  const el=document.getElementById('assetPhaseTable');if(!el)return;
+  const curYear=new Date().getFullYear();
+  el.innerHTML=ASSET_PHASES.map(p=>`
+    <tr${p.year===curYear||((p.year===2029)&&curYear>=2029)?' class="cur"':''}>
+      <td>${p.label}</td><td>${p.savings}万円</td><td>${p.nisa}万円</td><td>${p.ideco}万円</td><td>${p.care}万円</td>
+    </tr>`).join('');
 }
 
 // ===== EXPORT =====
@@ -834,6 +1228,7 @@ function switchTo(name){
   document.getElementById('nav'+name).classList.add('active');
   if(name==='Review')setTimeout(renderReview,60);
   if(name==='Monthly')renderMonthly();
+  if(name==='Goals'&&curGoalsTab==='income')renderAssetPhaseTable();
 }
 </script>
 </body>
