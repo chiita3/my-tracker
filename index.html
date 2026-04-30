@@ -256,15 +256,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 朝 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('morning')">
-      <span class="stit">☀️ 朝 <span class="sbdg" id="bdgMorning">0/2</span></span>
+      <span class="stit">☀️ 朝</span>
       <span class="sarr open" id="arrMorning">▼</span>
     </div>
     <div class="sbody" id="bodyMorning">
       <div class="ci"><div class="cl">顔水洗い・スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="morning.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">日焼け止め / 化粧<span class="hint">外出日はスコアに含まれます。ONにすると夜クレンジングが出ます</span></div><label class="tgl"><input type="checkbox" data-key="morning.sunscreen" onchange="onSunscreen(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">日焼け止めを塗った</div><label class="tgl"><input type="checkbox" data-key="morning.sunscreen" onchange="onSunscreenOrMakeup(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">化粧をした</div><label class="tgl"><input type="checkbox" data-key="morning.makeup" onchange="onSunscreenOrMakeup(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="morning.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">スッキリ起きられたか<span class="hint">記録のみ（スコアに影響しません）</span></div><label class="tgl"><input type="checkbox" data-key="morning.goodWakeup" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">起床時間<span class="hint">睡眠7h+ボーナスの計算に使います</span></div><input type="time" class="tinp" data-key="morning.wakeupTime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">スッキリ起きられたか</div><label class="tgl"><input type="checkbox" data-key="morning.goodWakeup" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">起床時間</div><input type="time" class="tinp" data-key="morning.wakeupTime" onchange="ck(this)"></div>
       <div class="ci"><div class="cl">朝ご飯</div><select class="msel" data-key="morning.breakfast" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
     </div>
   </div>
@@ -272,20 +273,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 昼 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('afternoon')">
-      <span class="stit">🌤 昼 <span class="sbdg" id="bdgAfternoon">0/2</span></span>
+      <span class="stit">🌤 昼</span>
       <span class="sarr" id="arrAfternoon">▼</span>
     </div>
     <div class="sbody" id="bodyAfternoon" style="display:none">
       <div class="ci">
-        <div class="cl">今日の状況<span class="hint">外出日は「1時間移動」の代わりに日焼け止め・運動が条件項目</span></div>
+        <div class="cl">今日の状況</div>
         <div class="dt-grp">
           <button class="dt-btn" id="dt_work" onclick="setDayType('work')">仕事</button>
-          <button class="dt-btn" id="dt_out" onclick="setDayType('out')">外出</button>
+          <button class="dt-btn" id="dt_out" onclick="setDayType('out')">お出掛け</button>
           <button class="dt-btn" id="dt_home" onclick="setDayType('home')">家</button>
         </div>
       </div>
       <div class="ci" id="movedHourlyItem">
-        <div class="cl">1時間ごとに体を動かした<span class="hint">在宅・仕事日のみ条件項目</span></div>
+        <div class="cl">1時間ごとに体を動かした<span class="hint">仕事・家の日が対象（お出掛けの日は対象外）</span></div>
         <label class="tgl"><input type="checkbox" data-key="afternoon.movedHourly" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="afternoon.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
@@ -296,15 +297,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <!-- 夜 -->
   <div class="sec">
     <div class="shdr" onclick="toggleSec('evening')">
-      <span class="stit">🌙 夜 <span class="sbdg" id="bdgEvening">0/3</span></span>
+      <span class="stit">🌙 夜</span>
       <span class="sarr" id="arrEvening">▼</span>
     </div>
     <div class="sbody" id="bodyEvening" style="display:none">
       <div class="ci"><div class="cl">サプリ</div><label class="tgl"><input type="checkbox" data-key="evening.supplements" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci" id="cleansingItem" style="display:none"><div class="cl">クレンジング<span class="hint">外出・日焼け止め使用日の条件項目</span></div><label class="tgl"><input type="checkbox" data-key="evening.cleansing" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">洗顔</div><label class="tgl"><input type="checkbox" data-key="evening.faceWash" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci" id="cleansingItem" style="display:none"><div class="cl">クレンジング</div><label class="tgl"><input type="checkbox" data-key="evening.cleansing" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci" id="faceWashItem"><div class="cl">洗顔</div><label class="tgl"><input type="checkbox" data-key="evening.faceWash" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">スキンケア（化粧水・乳液）</div><label class="tgl"><input type="checkbox" data-key="evening.skincare" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">就寝時間<span class="hint">睡眠7h+ボーナスの計算に使います</span></div><input type="time" class="tinp" data-key="evening.bedtime" onchange="ck(this)"></div>
+      <div class="ci"><div class="cl">就寝時間</div><input type="time" class="tinp" data-key="evening.bedtime" onchange="ck(this)"></div>
       <div class="ci"><div class="cl">夜ご飯</div><select class="msel" data-key="evening.dinner" onchange="ck(this)"><option value="">-</option><option value="ate">食べた</option><option value="outside">外食</option><option value="skipped">食べなかった</option></select></div>
     </div>
   </div>
@@ -316,7 +317,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <span class="sarr" id="arrDaily">▼</span>
     </div>
     <div class="sbody" id="bodyDaily" style="display:none">
-      <div class="ci"><div class="cl">タオルドライ・ヘアオイル・ドライヤー</div><label class="tgl"><input type="checkbox" data-key="daily.hairDry" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">タオル押さえ拭き・ヘアオイル</div><label class="tgl"><input type="checkbox" data-key="daily.hairDry" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">タンパク質カテゴリを食べた<span class="hint">目標: 48g｜サラダチキン・卵・豆腐・さば/いわし缶</span></div><label class="tgl"><input type="checkbox" data-key="daily.protein" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">食物繊維カテゴリを食べた<span class="hint">目標: 18g以上｜糸寒天・めかぶ・もずく・豆腐・野菜</span></div><label class="tgl"><input type="checkbox" data-key="daily.fiber" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">発酵食品カテゴリを食べた<span class="hint">ヨーグルト・納豆・キムチ・味噌汁</span></div><label class="tgl"><input type="checkbox" data-key="daily.fermented" onchange="ck(this)"><span class="tsl"></span></label></div>
@@ -326,14 +327,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         <div class="cl">運動・外出した<span class="hint" id="exerciseHint">在宅・仕事日のみ条件項目</span></div>
         <label class="tgl"><input type="checkbox" data-key="daily.exercise" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
-      <div class="ci"><div class="cl">5分以内にトイレ終了<span class="hint">スムーズな排便が目標（必須項目）</span></div><label class="tgl"><input type="checkbox" data-key="daily.toiletTimer" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">5分以内にトイレ終了</div><label class="tgl"><input type="checkbox" data-key="daily.toiletTimer" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div style="padding:8px 0 4px;font-size:11px;color:var(--txl);font-weight:600">── 記録のみ（スコアに影響しません）──</div>
       <div class="ci"><div class="cl">便が出た</div><label class="tgl"><input type="checkbox" data-key="daily.stool" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">残便感があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">出血があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">お酒を飲んだ<span class="hint">ボーナス「お酒なし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">間食あり<span class="hint">ボーナス「間食なし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.snack" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">カフェインあり<span class="hint">ボーナス「カフェインなし」に影響</span></div><label class="tgl warn"><input type="checkbox" data-key="daily.cafe" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">お酒を飲んだ</div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">間食あり</div><label class="tgl warn"><input type="checkbox" data-key="daily.snack" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">カフェインあり</div><label class="tgl warn"><input type="checkbox" data-key="daily.cafe" onchange="ck(this)"><span class="tsl"></span></label></div>
     </div>
   </div>
 
@@ -429,27 +430,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
 <!-- ===== REVIEW ===== -->
 <div class="screen" id="screenReview">
   <div style="padding-top:10px"><div class="psel" id="reviewPeriods"></div></div>
+
+  <!-- 改善が必要な項目 -->
   <div class="ccrd">
-    <div class="ctit">📊 ルーティン月間達成率</div>
-    <div style="position:relative;height:430px"><canvas id="routineChart"></canvas></div>
+    <div class="ctit">📉 改善が必要な項目 <span style="font-size:11px;font-weight:400;color:var(--txl)">達成率ワースト3</span></div>
+    <div style="font-size:12px;color:var(--txl);margin-bottom:10px">この項目を改善すると目標に近づきます</div>
+    <div id="improveItems"></div>
   </div>
+
+  <!-- 継続できている項目 -->
+  <div class="ccrd">
+    <div class="ctit">✅ 継続できている項目 <span style="font-size:11px;font-weight:400;color:var(--txl)">達成率80%以上</span></div>
+    <div id="goodItems"></div>
+  </div>
+
+  <!-- 腸活の状態 -->
+  <div class="ccrd">
+    <div class="ctit">🌱 腸活の状態</div>
+    <div id="bowelStats"></div>
+  </div>
+
+  <!-- 睡眠の達成日数 -->
+  <div class="ccrd">
+    <div class="ctit">😴 睡眠の達成日数</div>
+    <div id="sleepStats"></div>
+  </div>
+
+  <!-- 資産の現在地 -->
+  <div class="ccrd">
+    <div class="ctit">💴 資産の現在地</div>
+    <div id="assetPosition"></div>
+  </div>
+
+  <!-- 月1チェック推移 -->
   <div class="ccrd">
     <div class="ctit">📈 月1チェックの推移</div>
     <div style="position:relative;height:240px"><canvas id="monthlyChart"></canvas></div>
   </div>
+
+  <!-- 資産推移 -->
   <div class="ccrd">
     <div class="ctit">💴 資産推移</div>
     <div style="position:relative;height:220px"><canvas id="assetChart"></canvas></div>
   </div>
-  <div class="gcrd">
-    <div class="gtit">🔍 行動 vs 状態のギャップ</div>
-    <div class="gsub">行動はできているのに状態が変わっていない場合に注目</div>
-    <div id="gapViz"></div>
-    <div class="gleg">
-      <div class="gli"><div class="ld" style="background:var(--p)"></div>行動達成率</div>
-      <div class="gli"><div class="ld" style="background:var(--gn)"></div>状態スコア</div>
-    </div>
-  </div>
+
   <div class="expbtn">
     <button class="btn btn-o btn-sm" onclick="exportData()">💾 データをエクスポート</button>
   </div>
@@ -469,18 +493,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
     <!-- ありたい姿 -->
     <div class="gpanel active" id="gpanel-vision">
       <div class="gblock">
-        <div class="gblock-title">🌟 3年後のありたい姿（2029年4月）</div>
-        <div class="gitem"><span class="gcat">健康</span><span>腸が健康で毎日快便。肌・髪がきれいで、体が軽く動きやすい状態</span></div>
-        <div class="gitem"><span class="gcat">経済</span><span>副業収入が安定し、貯蓄・NISAが着実に積み上がっている状態</span></div>
-        <div class="gitem"><span class="gcat">生活</span><span>運動が習慣化し、自分のペースで整えながら働けている状態</span></div>
+        <div class="gblock-title">💰 収入・仕事</div>
+        <div class="gitem">月100万円をフリーランス／個人事業主として稼いでいる</div>
+        <div class="gitem">UCOさんのプロデューサーとして世界に広げる仕事をしている</div>
+        <div class="gitem">個人への仕事は紹介のみで発生し、営業は不要</div>
+        <div class="gitem">ときめく仕事だけをやれている</div>
+        <div class="gitem">投資・好きなことに躊躇なくお金を使えている</div>
+        <div class="gitem">浪費は節度を持って行っている</div>
       </div>
       <div class="gblock">
-        <div class="gblock-title">💡 この3年でやること</div>
-        <div class="gitem"><span class="gcat">習慣</span><span>スキンケア・ヘアケア・サプリ・食事管理を毎日継続する</span></div>
-        <div class="gitem"><span class="gcat">運動</span><span>ステージ1→2→3と段階的に運動量を増やす</span></div>
-        <div class="gitem"><span class="gcat">腸活</span><span>食物繊維・発酵食品・水分2L・腸を潤す食品を毎日摂る</span></div>
-        <div class="gitem"><span class="gcat">資産</span><span>NISA・iDeCoを継続しながら副業収入を育てる</span></div>
-        <div class="gitem"><span class="gcat">記録</span><span>このアプリで毎日記録し、月1チェックで振り返る</span></div>
+        <div class="gblock-title">✨ 外見・体・健康</div>
+        <div class="gitem">くびれがあり、お腹が出ていない。水着を自信を持って着られる</div>
+        <div class="gitem">肌：シワなし、ハリあり、シミ・毛穴が気にならない</div>
+        <div class="gitem">髪：艶・ハリがある</div>
+        <div class="gitem">見た目年齢・体の年齢が30代をキープ</div>
+        <div class="gitem">翌朝スッキリ起きられる</div>
+        <div class="gitem">適度な運動習慣があり体力がある</div>
+        <div class="gitem">外食やご馳走を何も気にせず楽しめる</div>
+        <div class="gitem">毎日スムーズに出る、残便感なし、旅行中も2日以上止まらない</div>
+        <div class="gitem">痔を悪化させない</div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">🏠 パートナー・生活</div>
+        <div class="gitem">お互いのペースを尊重しながら一緒に暮らしている</div>
+        <div class="gitem">日当たりが良く、冬も暖かく、いつもきれいな賃貸に住んでいる</div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">👨‍👩‍👧 親</div>
+        <div class="gitem">旅行に年1回以上、ご飯に年3〜4回行っている</div>
+        <div class="gitem">仮に親の年金がなくても2人分の老人ホーム費用（月40万目安）を月収から出せる</div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">👗 ファッション</div>
+        <div class="gitem">買い物で迷わない</div>
+        <div class="gitem">他人の目を気にしない</div>
       </div>
     </div>
 
@@ -493,16 +539,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         <div class="gitem"><span class="gcat">肌</span><span>つっぱりなし・ハリ・ツヤあり。シミ・毛穴が改善傾向</span></div>
         <div class="gitem"><span class="gcat">髪</span><span>艶・柔らかさあり、抜け毛が減少している</span></div>
         <div class="gitem"><span class="gcat">体型</span><span>ウエスト感覚ゆるい・体が軽いと感じる</span></div>
-        <div class="gitem"><span class="gcat">運動</span><span>ステージ3：週2〜3回の運動が継続できている</span></div>
+        <div class="gitem"><span class="gcat">運動</span><span>週2〜3回の運動が継続できている</span></div>
         <div class="gitem"><span class="gcat">睡眠</span><span>7時間以上睡眠が月の半分以上達成</span></div>
       </div>
       <div class="gblock">
         <div class="gblock-title">💴 財務</div>
-        <div class="gitem"><span class="gcat">副業</span><span>月3万円以上の副業収入が安定している</span></div>
-        <div class="gitem"><span class="gcat">貯蓄</span><span>貯蓄残高 300万円以上</span></div>
-        <div class="gitem"><span class="gcat">NISA</span><span>年間120万円積立継続中（2026年から累計360万円超）</span></div>
-        <div class="gitem"><span class="gcat">iDeCo</span><span>月2.3万円積立継続中</span></div>
-        <div class="gitem"><span class="gcat">備え</span><span>医療費バッファ 50万円以上確保</span></div>
+        <div class="gitem"><span class="gcat">収入</span><span>月60万円で独立済み、収入の3分の2以上がときめく仕事</span></div>
+        <div class="gitem"><span class="gcat">貯金</span><span>1,850万円（介護バッファ1,400万円達成）</span></div>
+        <div class="gitem"><span class="gcat">投資</span><span>NISA＋iDeCo合計1,200万円以上</span></div>
+        <div class="gitem"><span class="gcat">親サポ</span><span>老人ホーム2人分（月40万目安）を月収から出せる</span></div>
       </div>
     </div>
 
@@ -511,22 +556,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="gblock">
         <div class="year-badge">2026年12月末 達成基準</div>
         <div class="gblock-title">🏃 運動・習慣</div>
-        <div class="gitem"><span class="gcat">運動</span><span>ステージ3（週2〜3回運動）に到達・定着</span></div>
-        <div class="gitem"><span class="gcat">習慣</span><span>必須13項目の月平均スコア 80%以上</span></div>
-        <div class="gitem"><span class="gcat">腸</span><span>残便感・出血なし日が月の80%以上</span></div>
-        <div class="gitem"><span class="gcat">睡眠</span><span>7時間睡眠ボーナスが月15日以上</span></div>
-      </div>
-      <div class="gblock">
-        <div class="gblock-title">💴 財務</div>
-        <div class="gitem"><span class="gcat">副業</span><span>月1万円以上の副業収入を達成</span></div>
-        <div class="gitem"><span class="gcat">貯蓄</span><span>貯蓄残高 100万円以上</span></div>
-        <div class="gitem"><span class="gcat">NISA</span><span>年間120万円積立継続（累計120万円）</span></div>
-        <div class="gitem"><span class="gcat">iDeCo</span><span>月2.3万円積立継続</span></div>
+        <div class="gitem"><span class="gcat">運動</span><span>週2〜3回の運動が定着している</span></div>
+        <div class="gitem"><span class="gcat">腸活</span><span>腸活・痔のケアの習慣が定着している</span></div>
+        <div class="gitem"><span class="gcat">睡眠</span><span>7時間以上が月15日以上達成</span></div>
       </div>
       <div class="gblock">
         <div class="gblock-title">✨ 美容</div>
-        <div class="gitem"><span class="gcat">肌</span><span>つっぱりが改善傾向、ハリ・ツヤが感じられる</span></div>
-        <div class="gitem"><span class="gcat">髪</span><span>手触りが柔らかくなり、艶が出てきた</span></div>
+        <div class="gitem"><span class="gcat">肌</span><span>スキンケアのルーティンが定着し、改善が始まっている</span></div>
+        <div class="gitem"><span class="gcat">髪</span><span>ケアが習慣になっている、手触りの変化が感じられる</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">💴 財務</div>
+        <div class="gitem"><span class="gcat">副業</span><span>月15〜20万円</span></div>
+        <div class="gitem"><span class="gcat">貯金</span><span>1,500万円維持</span></div>
+        <div class="gitem"><span class="gcat">NISA</span><span>年間120万円積立継続</span></div>
+        <div class="gitem"><span class="gcat">iDeCo</span><span>月5,000円積立継続</span></div>
+        <div class="gitem"><span class="gcat">介護</span><span>目標額と現状を把握している</span></div>
+      </div>
+      <div class="gblock">
+        <div class="gblock-title">🏠 生活</div>
+        <div class="gitem"><span class="gcat">住居</span><span>追い焚きあり・日当たり良し・暖かい賃貸に引っ越し済み</span></div>
+        <div class="gitem"><span class="gcat">旅行</span><span>パートナーと2人で旅行に行ったことがある</span></div>
       </div>
     </div>
 
@@ -536,19 +586,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
         <div class="gblock-title">💰 副業収入 ロードマップ</div>
         <table class="phase-tbl">
           <tr><th>時期</th><th>フェーズ</th><th>副業収入/月</th></tr>
-          <tr><td>2026前半</td><td>土台づくり</td><td>〜5,000円</td></tr>
-          <tr><td>2026後半</td><td>初収益</td><td>〜1万円</td></tr>
-          <tr><td>2027年</td><td>安定化</td><td>〜3万円</td></tr>
-          <tr><td>2028年</td><td>成長</td><td>〜5万円</td></tr>
-          <tr><td>2029年</td><td>目標達成</td><td>3万円以上安定</td></tr>
+          <tr><td>2026年12月</td><td>副業加速</td><td>15〜20万円</td></tr>
+          <tr><td>2027年6月</td><td>成長</td><td>30万円</td></tr>
+          <tr><td>2027年末</td><td>独立判断ライン</td><td>40〜50万円</td></tr>
+          <tr><td>2028年</td><td>フリーランス転向</td><td>月収60万円</td></tr>
+          <tr><td>2029年</td><td>目標達成</td><td>月収100万円</td></tr>
         </table>
       </div>
       <div class="gblock">
         <div class="gblock-title">💴 資産形成 フェーズ目標</div>
         <div style="overflow-x:auto">
           <table class="phase-tbl">
-            <thead><tr><th>年</th><th>貯蓄</th><th>NISA累計</th><th>iDeCo累計</th><th>医療備え</th></tr></thead>
-            <tbody id="assetPhaseTable"></tbody>
+            <thead><tr><th>時期</th><th>貯金</th><th>NISA＋iDeCo</th></tr></thead>
+            <tbody>
+              <tr><td>2026年末</td><td>1,500万円</td><td>NISA 423万＋iDeCo 188万以上</td></tr>
+              <tr><td>2027年末</td><td>1,600万円超</td><td>700〜800万円</td></tr>
+              <tr><td>2028年末</td><td>1,700万円台</td><td>900〜1,000万円</td></tr>
+              <tr><td>2029年〜</td><td>1,850万円</td><td>1,200万円以上</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -687,7 +742,7 @@ function setMR(ym,r){
 }
 
 function emptyDR(){return{
-  morning:{skincare:false,sunscreen:false,supplements:false,goodWakeup:false,wakeupTime:'',breakfast:''},
+  morning:{skincare:false,sunscreen:false,makeup:false,supplements:false,goodWakeup:false,wakeupTime:'',breakfast:''},
   afternoon:{dayType:'',movedHourly:false,supplements:false,lunch:''},
   evening:{supplements:false,cleansing:false,faceWash:false,skincare:false,bedtime:'',dinner:''},
   daily:{hairDry:false,protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,toiletTimer:false,stool:false,residualStool:false,bleeding:false,alcohol:false,snack:false,cafe:false},
@@ -729,15 +784,21 @@ function calcScore(r){
   const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
   const isOut=a.dayType==='out';
 
-  // Must-do 13 items (always counted)
-  const mustArr=[d.hairDry,m.skincare,m.supplements,a.supplements,e.supplements,e.faceWash,e.skincare,d.protein,d.fiber,d.fermented,d.intestineOil,d.water2L,d.toiletTimer];
+  // faceWash は日焼け止めのみの日は不要なので must-do から除外
+  const sunscreenOnly=m.sunscreen&&!m.makeup;
+  const mustArr=[d.hairDry,m.skincare,m.supplements,a.supplements,e.supplements,
+    sunscreenOnly?null:e.faceWash,
+    e.skincare,d.protein,d.fiber,d.fermented,d.intestineOil,d.water2L,d.toiletTimer
+  ].filter(x=>x!==null&&x!==undefined);
   const mustDone=mustArr.filter(Boolean).length;
+  const mustTotal=sunscreenOnly?12:13;
 
   // Conditional items (counted only when applicable)
   const conds=[];
   if(isOut){
-    conds.push(!!m.sunscreen);
-    if(m.sunscreen)conds.push(!!e.cleansing);
+    if(m.sunscreen)conds.push(true); // 日焼け止め装着
+    if(m.makeup)conds.push(true);    // 化粧装着
+    if(m.sunscreen||m.makeup)conds.push(!!e.cleansing); // クレンジング
   } else {
     conds.push(!!a.movedHourly);
     conds.push(!!d.exercise);
@@ -766,8 +827,8 @@ function calcScore(r){
   ];
   const plusDone=plusItems.filter(x=>x.done).length;
 
-  return{mustDone,mustTotal:13,condDone,condTotal,plusDone,plusTotal:5,plusItems,
-    total:mustDone+condDone,totalMax:13+condTotal};
+  return{mustDone,mustTotal,condDone,condTotal,plusDone,plusTotal:5,plusItems,
+    total:mustDone+condDone,totalMax:mustTotal+condTotal};
 }
 
 // ===== STATE =====
@@ -790,17 +851,27 @@ function loadUI(r){
     const v=getNested(r,el.getAttribute('data-key'));
     if(el.type==='checkbox')el.checked=v===true;else el.value=v||'';
   });
-  document.getElementById('cleansingItem').style.display=(r.morning&&r.morning.sunscreen)?'flex':'none';
+  updateCleansingUI(r);
   updateDayTypeUI(r);
+}
+function updateCleansingUI(r){
+  const hasSunscreen=!!(r.morning&&r.morning.sunscreen);
+  const hasMakeup=!!(r.morning&&r.morning.makeup);
+  // クレンジング: 日焼け止め or 化粧のどちらかONで表示
+  document.getElementById('cleansingItem').style.display=(hasSunscreen||hasMakeup)?'flex':'none';
+  // 洗顔: 日焼け止めのみ（化粧なし）の場合は非表示。それ以外は表示
+  const fw=document.getElementById('faceWashItem');
+  if(fw)fw.style.display=(hasSunscreen&&!hasMakeup)?'none':'flex';
 }
 function ck(el){
   const dt=fmtDate(curDate),r=getDR(dt);
   setNested(r,el.getAttribute('data-key'),el.type==='checkbox'?el.checked:el.value);
   setDR(dt,r);updateProg(r);showSaved();
 }
-function onSunscreen(el){
+function onSunscreenOrMakeup(el){
   ck(el);
-  document.getElementById('cleansingItem').style.display=el.checked?'flex':'none';
+  const dt=fmtDate(curDate),r=getDR(dt);
+  updateCleansingUI(r);
 }
 function setDayType(type){
   const dt=fmtDate(curDate),r=getDR(dt);
@@ -831,24 +902,16 @@ function updateProg(r){
 function updateBadges(r){
   const m=r.morning||{},a=r.afternoon||{},e=r.evening||{},d=r.daily||{};
   const isOut=a.dayType==='out';
-  // Morning: skincare(M)+supplements(M) always; sunscreen(C) if isOut
-  const mDone=(m.skincare?1:0)+(m.supplements?1:0)+(isOut&&m.sunscreen?1:0);
-  const mTot=2+(isOut?1:0);
-  document.getElementById('bdgMorning').textContent=mDone+'/'+mTot;
-  // Afternoon: supplements(M); movedHourly(C) if !isOut
-  const aDone=(a.supplements?1:0)+(!isOut&&a.movedHourly?1:0);
-  const aTot=1+(!isOut?1:0);
-  document.getElementById('bdgAfternoon').textContent=aDone+'/'+aTot;
-  // Evening: supplements(M)+faceWash(M)+skincare(M); cleansing(C) if isOut&&sunscreen
-  const eDone=(e.supplements?1:0)+(e.faceWash?1:0)+(e.skincare?1:0)+(isOut&&m.sunscreen&&e.cleansing?1:0);
-  const eTot=3+(isOut&&m.sunscreen?1:0);
-  document.getElementById('bdgEvening').textContent=eDone+'/'+eTot;
-  // Daily: hairDry+protein+fiber+fermented+intestineOil+water2L+toiletTimer(M 7); exercise(C) if !isOut
+  const sunscreenOnly=m.sunscreen&&!m.makeup;
+  // Daily badge: hairDry+protein+fiber+fermented+intestineOil+water2L+toiletTimer(M 7 or 6); exercise(C) if !isOut
+  const dBase=sunscreenOnly?6:7;
   const dDone=(d.hairDry?1:0)+(d.protein?1:0)+(d.fiber?1:0)+(d.fermented?1:0)+(d.intestineOil?1:0)+(d.water2L?1:0)+(d.toiletTimer?1:0)+(!isOut&&d.exercise?1:0);
-  const dTot=7+(!isOut?1:0);
-  document.getElementById('bdgDaily').textContent=dDone+'/'+dTot;
+  const dTot=dBase+(!isOut?1:0);
+  const bdgDaily=document.getElementById('bdgDaily');
+  if(bdgDaily)bdgDaily.textContent=dDone+'/'+dTot;
   const ci=getCI(),cr=r.custom||{};
-  document.getElementById('bdgCustom').textContent=ci.filter(i=>cr[i.id]).length+'/'+ci.length;
+  const bdgCustom=document.getElementById('bdgCustom');
+  if(bdgCustom)bdgCustom.textContent=ci.filter(i=>cr[i.id]).length+'/'+ci.length;
 }
 function toggleSec(name){
   const cap=name[0].toUpperCase()+name.slice(1);
@@ -902,10 +965,10 @@ const MF={
 
 // Asset phase definitions
 const ASSET_PHASES=[
-  {year:2026,label:'2026年',savings:100,nisa:120,ideco:28,care:10},
-  {year:2027,label:'2027年',savings:180,nisa:240,ideco:56,care:20},
-  {year:2028,label:'2028年',savings:250,nisa:360,ideco:84,care:35},
-  {year:2029,label:'2029年+',savings:300,nisa:480,ideco:110,care:50},
+  {year:2026,label:'2026年末',savings:1500,nisa:423,ideco:188,care:10},
+  {year:2027,label:'2027年末',savings:1600,nisa:540,ideco:260,care:20},
+  {year:2028,label:'2028年末',savings:1700,nisa:660,ideco:340,care:35},
+  {year:2029,label:'2029年末',savings:1850,nisa:900,ideco:300,care:50},
 ];
 const ASSET_FIELDS=[
   {key:'salary',label:'月収（手取り）',unit:'万円',phaseKey:null},
@@ -1113,14 +1176,162 @@ function renderPeriods(){
   }).join('');
 }
 function selReviewM(ym){reviewYM=ym;renderPeriods();renderReview()}
-function renderReview(){renderRChart();renderMChart();renderAssetChart();renderGap()}
-function renderRChart(){
-  const rates=monthRates(reviewYM);
-  if(rChart)rChart.destroy();
-  const ctx=document.getElementById('routineChart').getContext('2d');
-  rChart=new Chart(ctx,{type:'bar',data:{labels:RL.map(r=>r.lbl),datasets:[{data:rates,backgroundColor:rates.map(r=>r>=80?'#68B96A':r>=50?'#6B9FD4':'#E57373'),borderRadius:4}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}%`}}},
-      scales:{x:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{font:{size:11}},grid:{display:false}}}}});
+function renderReview(){renderImproveItems(reviewYM);renderGoodItems(reviewYM);renderBowelStats(reviewYM);renderSleepStats(reviewYM);renderAssetPosition(reviewYM);renderMChart();renderAssetChart();}
+
+function renderImproveItems(ym){
+  const el=document.getElementById('improveItems');if(!el)return;
+  const rates=monthRates(ym);
+  const items=RL.map((r,i)=>({lbl:r.lbl,rate:rates[i]}))
+    .filter(x=>x.rate!==undefined)
+    .sort((a,b)=>a.rate-b.rate)
+    .slice(0,3);
+  if(!items.length){el.innerHTML='<div style="font-size:13px;color:var(--txl)">データがありません</div>';return;}
+  el.innerHTML=items.map(it=>{
+    const col=it.rate>=80?'var(--gn)':it.rate>=50?'var(--p)':'var(--rd)';
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">${it.lbl}</span>
+        <span style="font-size:13px;font-weight:700;color:${col}">${it.rate}%</span>
+      </div>
+      <div style="height:7px;background:#E2E8F0;border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${it.rate}%;background:${col};border-radius:4px;transition:width .4s"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderGoodItems(ym){
+  const el=document.getElementById('goodItems');if(!el)return;
+  const rates=monthRates(ym);
+  const items=RL.map((r,i)=>({lbl:r.lbl,rate:rates[i]}))
+    .filter(x=>x.rate>=80)
+    .sort((a,b)=>b.rate-a.rate);
+  if(!items.length){el.innerHTML='<div style="font-size:13px;color:var(--txl)">まだ80%以上の項目はありません</div>';return;}
+  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px">`+
+    items.map(it=>`<div style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#F0FFF4;border:1px solid var(--gn);border-radius:16px">
+      <span style="font-size:12px;font-weight:600;color:#276749">${it.lbl}</span>
+      <span style="font-size:11px;color:var(--gn);font-weight:700">${it.rate}%</span>
+    </div>`).join('')+`</div>`;
+}
+
+function renderBowelStats(ym){
+  const el=document.getElementById('bowelStats');if(!el)return;
+  const all=ld(SK.d);
+  const days=Object.keys(all).filter(d=>d.startsWith(ym));
+  if(!days.length){el.innerHTML='<div style="font-size:13px;color:var(--txl)">データがありません</div>';return;}
+  const stoolDays=days.filter(d=>all[d].daily&&all[d].daily.stool).length;
+  const residualDays=days.filter(d=>all[d].daily&&all[d].daily.residualStool).length;
+  const bleedDays=days.filter(d=>all[d].daily&&all[d].daily.bleeding).length;
+  const n=days.length;
+  const stoolPct=Math.round(stoolDays/n*100);
+  const residualPct=stoolDays>0?Math.round(residualDays/stoolDays*100):0;
+  const bleedPct=stoolDays>0?Math.round(bleedDays/stoolDays*100):0;
+  // Previous month comparison
+  const prev=ym.split('-');const prevM=parseInt(prev[1])-1;
+  const prevYM=prevM<=0?`${parseInt(prev[0])-1}-12`:`${prev[0]}-${String(prevM).padStart(2,'0')}`;
+  const prevDays=Object.keys(all).filter(d=>d.startsWith(prevYM));
+  let prevResidualPct=null,prevBleedPct=null;
+  if(prevDays.length){
+    const ps=prevDays.filter(d=>all[d].daily&&all[d].daily.stool).length;
+    if(ps>0){
+      prevResidualPct=Math.round(prevDays.filter(d=>all[d].daily&&all[d].daily.residualStool).length/ps*100);
+      prevBleedPct=Math.round(prevDays.filter(d=>all[d].daily&&all[d].daily.bleeding).length/ps*100);
+    }
+  }
+  const diff=(cur,prev)=>{
+    if(prev===null)return'';
+    const d=cur-prev;
+    if(d===0)return`<span style="font-size:11px;color:var(--txl)">前月比 ±0%</span>`;
+    const arrow=d<0?'▼':'▲';
+    const col=d<0?'var(--gn)':'var(--rd)';
+    return`<span style="font-size:11px;color:${col}">${arrow}${Math.abs(d)}% vs先月</span>`;
+  };
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--txl);margin-bottom:4px">便あり日</div>
+        <div style="font-size:22px;font-weight:700;color:var(--p)">${stoolDays}<span style="font-size:13px">日</span></div>
+        <div style="font-size:11px;color:var(--txl)">${n}日中 ${stoolPct}%</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--txl);margin-bottom:4px">残便感</div>
+        <div style="font-size:22px;font-weight:700;color:${residualPct>30?'var(--rd)':residualPct>15?'var(--yw)':'var(--gn)'}">${residualPct}<span style="font-size:13px">%</span></div>
+        <div style="font-size:11px">${diff(residualPct,prevResidualPct)}</div>
+      </div>
+    </div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:11px;color:var(--txl);margin-bottom:2px">出血あり（便ありの日中）</div>
+        <div style="font-size:18px;font-weight:700;color:${bleedPct>10?'var(--rd)':bleedPct>0?'var(--yw)':'var(--gn)'}">${bleedPct}%</div>
+      </div>
+      <div style="text-align:right">${diff(bleedPct,prevBleedPct)}</div>
+    </div>`;
+}
+
+function renderSleepStats(ym){
+  const el=document.getElementById('sleepStats');if(!el)return;
+  const all=ld(SK.d);
+  const days=Object.keys(all).filter(d=>d.startsWith(ym));
+  if(!days.length){el.innerHTML='<div style="font-size:13px;color:var(--txl)">データがありません</div>';return;}
+  const target=15;
+  const sleep7Days=days.filter(d=>{
+    const r=all[d];
+    if(!r.morning||!r.evening)return false;
+    const wake=r.morning.wakeupTime;const bed=r.evening.bedtime;
+    if(!wake||!bed)return false;
+    const wh=parseInt(wake.split(':')[0]),wm=parseInt(wake.split(':')[1]||0);
+    const bh=parseInt(bed.split(':')[0]),bm=parseInt(bed.split(':')[1]||0);
+    let diff=(wh*60+wm)-(bh*60+bm);
+    if(diff<0)diff+=24*60;
+    return diff>=420;// 7h=420min
+  }).length;
+  const pct=Math.round(sleep7Days/target*100);
+  const barPct=Math.min(100,pct);
+  const col=sleep7Days>=target?'var(--gn)':sleep7Days>=10?'var(--p)':'var(--yw)';
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px">
+      <div>
+        <div style="font-size:28px;font-weight:700;color:${col}">${sleep7Days}<span style="font-size:15px;font-weight:400;color:var(--txl)"> 日</span></div>
+        <div style="font-size:12px;color:var(--txl)">目標 ${target}日 / 月</div>
+      </div>
+      <div style="font-size:13px;color:var(--txl);font-weight:600">${days.length}日分のデータ</div>
+    </div>
+    <div style="height:10px;background:#E2E8F0;border-radius:5px;overflow:hidden;margin-bottom:6px">
+      <div style="height:100%;width:${barPct}%;background:${col};border-radius:5px;transition:width .4s"></div>
+    </div>
+    <div style="font-size:11px;color:var(--txl);text-align:right">${sleep7Days}/${target}日 (${pct}%達成)</div>`;
+}
+
+function renderAssetPosition(ym){
+  const el=document.getElementById('assetPosition');if(!el)return;
+  const r=getMR(ym);
+  const asset=r.asset||{};
+  const phase=getCurrentPhase();
+  const rows=[
+    {label:'副業収入/月',val:asset.sideIncome,target:15,unit:'万円',note:'目標 15〜20万円'},
+    {label:'貯蓄残高',val:asset.savings,target:phase.savings,unit:'万円',note:`${phase.label}目標 ${phase.savings}万円`},
+    {label:'NISA残高',val:asset.nisa,target:phase.nisa,unit:'万円',note:`${phase.label}目標 ${phase.nisa}万円`},
+    {label:'iDeCo残高',val:asset.ideco,target:phase.ideco,unit:'万円',note:`${phase.label}目標 ${phase.ideco}万円`},
+  ];
+  const noData=rows.every(r=>r.val==null||r.val==='');
+  if(noData){el.innerHTML='<div style="font-size:13px;color:var(--txl)">月1チェックで資産を入力すると表示されます</div>';return;}
+  el.innerHTML=rows.map(row=>{
+    if(row.val==null||row.val==='')return`<div style="padding:10px 0;border-bottom:1px solid var(--br)">
+      <div style="display:flex;justify-content:space-between"><span style="font-size:13px;color:var(--txl)">${row.label}</span><span style="font-size:12px;color:#ccc">未入力</span></div></div>`;
+    const v=Number(row.val);
+    const pct=row.target>0?Math.min(100,Math.round(v/row.target*100)):0;
+    const col=pct>=100?'var(--gn)':pct>=70?'var(--p)':'var(--yw)';
+    return`<div style="padding:10px 0;border-bottom:1px solid var(--br)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">${row.label}</span>
+        <span style="font-size:14px;font-weight:700;color:${col}">${v}${row.unit}</span>
+      </div>
+      <div style="height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;margin-bottom:3px">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:3px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:11px;color:var(--txl)">${row.note} — ${pct}%</div>
+    </div>`;
+  }).join('');
 }
 function renderMChart(){
   const all=ld(SK.d);const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));months.add(fmtYM(new Date()));
@@ -1160,20 +1371,6 @@ function renderAssetChart(){
       plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?c.raw+'万円':'未入力'}`}}},
       scales:{y:{ticks:{callback:v=>v+'万',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
 }
-function renderGap(){
-  const all=ld(SK.d);const months=new Set(Object.keys(all).map(d=>d.substring(0,7)));months.add(fmtYM(new Date()));
-  const sorted=Array.from(months).sort().slice(-4);
-  document.getElementById('gapViz').innerHTML=sorted.map(m=>{
-    const mo=parseInt(m.split('-')[1]);
-    const r=monthRates(m),act=r.length?Math.round(r.reduce((a,b)=>a+b,0)/r.length):0,cond=condScore(m);
-    const gap=cond!=null&&act>=70&&cond<act-20;
-    return`<div class="grow"><div class="glabs"><span>${mo}月</span><span>行動 ${act}% / 状態 ${cond!=null?cond+'%':'未入力'}${gap?' ⚠️ ギャップ':''}</span></div>
-      <div style="height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;margin-bottom:3px"><div style="height:100%;width:${act}%;background:var(--p);border-radius:4px"></div></div>
-      ${cond!=null?`<div style="height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden"><div style="height:100%;width:${cond}%;background:var(--gn);border-radius:4px"></div></div>`:`<div style="font-size:11px;color:#aaa;padding:2px 0">月1チェック未入力</div>`}
-    </div>`;
-  }).join('');
-}
-
 // ===== GOALS =====
 let curGoalsTab='vision';
 function switchGoalsTab(tab){
