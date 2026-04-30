@@ -324,11 +324,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="ci"><div class="cl">腸を潤す食品を食べた<span class="hint">オリーブオイル・オクラ・なめこ・アボカド</span></div><label class="tgl"><input type="checkbox" data-key="daily.intestineOil" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">水分 2L以上飲んだ</div><label class="tgl"><input type="checkbox" data-key="daily.water2L" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci">
-        <div class="cl">運動・外出した<span class="hint" id="exerciseHint">在宅・仕事日のみ条件項目</span></div>
+        <div class="cl">運動・外出した<span class="hint" id="exerciseHint">仕事・家の日が対象（お出掛けの日は対象外）</span></div>
         <label class="tgl"><input type="checkbox" data-key="daily.exercise" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
       <div class="ci"><div class="cl">5分以内にトイレ終了</div><label class="tgl"><input type="checkbox" data-key="daily.toiletTimer" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div style="padding:8px 0 4px;font-size:11px;color:var(--txl);font-weight:600">── 記録のみ（スコアに影響しません）──</div>
       <div class="ci"><div class="cl">便が出た</div><label class="tgl"><input type="checkbox" data-key="daily.stool" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">残便感があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">出血があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
@@ -806,15 +805,19 @@ function calcScore(r){
   const condDone=conds.filter(Boolean).length;
   const condTotal=conds.length;
 
-  // Sleep hours from wakeupTime + bedtime
+  // Sleep hours: previous day's bedtime → today's wakeupTime
   let sleepOk=false;
-  if(m.wakeupTime&&e.bedtime){
-    const[wh,wm]=m.wakeupTime.split(':').map(Number);
-    const[bh,bm]=e.bedtime.split(':').map(Number);
-    const wake=wh*60+wm,bed=bh*60+bm;
-    // bed before midnight, wake after → typical night sleep
-    const diff=bed<=wake?(wake-bed):(24*60-bed+wake);
-    sleepOk=diff>=420; // 7 hours = 420 min
+  if(m.wakeupTime){
+    const prevD=new Date(curDate);prevD.setDate(prevD.getDate()-1);
+    const prevR=getDR(fmtDate(prevD));
+    const prevBed=prevR.evening&&prevR.evening.bedtime;
+    if(prevBed){
+      const[wh,wm]=m.wakeupTime.split(':').map(Number);
+      const[bh,bm]=prevBed.split(':').map(Number);
+      const wake=wh*60+wm,bed=bh*60+bm;
+      const diff=bed<=wake?(wake-bed):(24*60-bed+wake);
+      sleepOk=diff>=420;// 7 hours = 420 min
+    }
   }
 
   // Plus items (5 bonus)
@@ -887,7 +890,7 @@ function updateDayTypeUI(r){
 function updateExerciseHint(){
   const st=getS().exerciseStage||1;
   const el=document.getElementById('exerciseHint');
-  if(el)el.textContent='目標: '+STAGE_DESCS[st]+'（在宅・仕事日のみ条件項目）';
+  if(el)el.textContent='目標: '+STAGE_DESCS[st]+' 仕事・家の日が対象（お出掛けの日は対象外）';
 }
 function updateProg(r){
   const sc=calcScore(r);
@@ -1276,13 +1279,16 @@ function renderSleepStats(ym){
   const target=15;
   const sleep7Days=days.filter(d=>{
     const r=all[d];
-    if(!r.morning||!r.evening)return false;
-    const wake=r.morning.wakeupTime;const bed=r.evening.bedtime;
-    if(!wake||!bed)return false;
-    const wh=parseInt(wake.split(':')[0]),wm=parseInt(wake.split(':')[1]||0);
-    const bh=parseInt(bed.split(':')[0]),bm=parseInt(bed.split(':')[1]||0);
-    let diff=(wh*60+wm)-(bh*60+bm);
-    if(diff<0)diff+=24*60;
+    if(!r.morning||!r.morning.wakeupTime)return false;
+    // Previous day's bedtime
+    const prevD=new Date(d+'T00:00:00');prevD.setDate(prevD.getDate()-1);
+    const prevDt=fmtDate(prevD);
+    const prevBed=all[prevDt]&&all[prevDt].evening&&all[prevDt].evening.bedtime;
+    if(!prevBed)return false;
+    const[wh,wm]=r.morning.wakeupTime.split(':').map(Number);
+    const[bh,bm]=prevBed.split(':').map(Number);
+    const wake=wh*60+wm,bed=bh*60+bm;
+    const diff=bed<=wake?(wake-bed):(24*60-bed+wake);
     return diff>=420;// 7h=420min
   }).length;
   const pct=Math.round(sleep7Days/target*100);
