@@ -323,7 +323,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="ci"><div class="cl">発酵食品カテゴリを食べた<span class="hint">ヨーグルト・納豆・キムチ・味噌汁</span></div><label class="tgl"><input type="checkbox" data-key="daily.fermented" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">腸を潤す食品を食べた<span class="hint">オリーブオイル・オクラ・なめこ・アボカド</span></div><label class="tgl"><input type="checkbox" data-key="daily.intestineOil" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">水分 2L以上飲んだ</div><label class="tgl"><input type="checkbox" data-key="daily.water2L" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci">
+      <div class="ci" id="exerciseItem">
         <div class="cl">運動・外出した<span class="hint" id="exerciseHint">仕事・家の日が対象（お出掛けの日は対象外）</span></div>
         <label class="tgl"><input type="checkbox" data-key="daily.exercise" onchange="ck(this)"><span class="tsl"></span></label>
       </div>
@@ -332,23 +332,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
       <div class="ci"><div class="cl">残便感があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.residualStool" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">出血があった</div><label class="tgl bad"><input type="checkbox" data-key="daily.bleeding" onchange="ck(this)"><span class="tsl"></span></label></div>
       <div class="ci"><div class="cl">お酒を飲んだ</div><label class="tgl warn"><input type="checkbox" data-key="daily.alcohol" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">間食あり</div><label class="tgl warn"><input type="checkbox" data-key="daily.snack" onchange="ck(this)"><span class="tsl"></span></label></div>
-      <div class="ci"><div class="cl">カフェインあり</div><label class="tgl warn"><input type="checkbox" data-key="daily.cafe" onchange="ck(this)"><span class="tsl"></span></label></div>
+      <div class="ci"><div class="cl">お菓子・デザートを食べた</div><label class="tgl warn"><input type="checkbox" data-key="daily.sweets" onchange="ck(this)"><span class="tsl"></span></label></div>
     </div>
   </div>
 
-  <!-- 自由項目 -->
+  <!-- メモ -->
   <div class="sec">
-    <div class="shdr" onclick="toggleSec('custom')">
-      <span class="stit">✏️ 自由項目 <span class="sbdg" id="bdgCustom">0/0</span></span>
-      <span class="sarr" id="arrCustom">▼</span>
+    <div class="shdr" onclick="toggleSec('memo')">
+      <span class="stit">📝 メモ</span>
+      <span class="sarr" id="arrMemo">▼</span>
     </div>
-    <div class="sbody" id="bodyCustom" style="display:none">
-      <div id="customList"></div>
-      <div class="cadd">
-        <input type="text" class="cinp" id="customInput" placeholder="項目を追加..." onkeydown="if(event.key==='Enter')addCustom()">
-        <button class="btn btn-p btn-sm" onclick="addCustom()">追加</button>
-      </div>
+    <div class="sbody" id="bodyMemo" style="display:none">
+      <textarea id="memoText" placeholder="今日あったことを自由に記録..." rows="5"
+        style="width:100%;padding:10px;border:1px solid var(--br);border-radius:8px;font-size:14px;background:var(--bg);color:var(--tx);resize:vertical;outline:none;font-family:inherit;line-height:1.6"
+        oninput="saveMemo(this.value)"></textarea>
     </div>
   </div>
 </div>
@@ -420,9 +417,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   </div>
   <!-- 収入 -->
   <div class="msec">
-    <div class="mstit">💰 収入</div>
-    <div class="mi"><div class="mil">今月の副業収入（円）</div><input type="number" class="iinp" id="income_amount" placeholder="0" oninput="saveMF('income.amount',this.value)"></div>
-    <div class="mi"><div class="mil">UCOさんの仕事で進んだことがあるか</div><div class="rg" id="income_uco"></div></div>
+    <div class="mstit">💰 UCO関連</div>
+    <div class="mi"><div class="mil">今月UCOさんの仕事で動いた時間</div><div style="display:flex;align-items:center;gap:8px"><input type="number" class="iinp" id="uco_hours" placeholder="0" style="width:120px" oninput="saveMF('income.ucoHours',this.value)"><span style="font-size:14px;color:var(--txl)">時間</span></div></div>
+    <div class="mi"><div class="mil">今月新たに紹介・問い合わせがあったか</div><div class="rg" id="uco_inquiry"></div></div>
   </div>
 </div>
 
@@ -471,6 +468,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sa
   <div class="ccrd">
     <div class="ctit">💴 資産推移</div>
     <div style="position:relative;height:220px"><canvas id="assetChart"></canvas></div>
+  </div>
+
+  <!-- 相関分析 -->
+  <div class="ccrd">
+    <div class="ctit">🔗 習慣と体の状態の相関</div>
+    <div style="font-size:12px;color:var(--txl);margin-bottom:10px">データが蓄積されるほど精度が上がります（3ヶ月以上推奨）</div>
+    <div id="correlationSection"></div>
   </div>
 
   <div class="expbtn">
@@ -744,24 +748,19 @@ function emptyDR(){return{
   morning:{skincare:false,sunscreen:false,makeup:false,supplements:false,goodWakeup:false,wakeupTime:'',breakfast:''},
   afternoon:{dayType:'',movedHourly:false,supplements:false,lunch:''},
   evening:{supplements:false,cleansing:false,faceWash:false,skincare:false,bedtime:'',dinner:''},
-  daily:{hairDry:false,protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,toiletTimer:false,stool:false,residualStool:false,bleeding:false,alcohol:false,snack:false,cafe:false},
-  custom:{}
+  daily:{hairDry:false,protein:false,fiber:false,fermented:false,intestineOil:false,water2L:false,exercise:false,toiletTimer:false,stool:false,residualStool:false,bleeding:false,alcohol:false,sweets:false},
+  memo:''
 }}
 function mergeDR(s){
   const d=emptyDR();
   const daily={...d.daily,...(s.daily||{})};
-  // Migration: cafeTime → cafe + snack (split)
-  if(s.daily&&s.daily.cafeTime!==undefined){
-    if(daily.cafe===false)daily.cafe=!!s.daily.cafeTime;
-    if(daily.snack===false)daily.snack=!!s.daily.cafeTime;
-  }
   // toiletOver5 (old bad-framing) is dropped — different concept
   return{
     morning:{...d.morning,...(s.morning||{})},
     afternoon:{...d.afternoon,...(s.afternoon||{})},
     evening:{...d.evening,...(s.evening||{})},
     daily,
-    custom:{...(s.custom||{})}
+    memo:s.memo||''
   };
 }
 
@@ -825,12 +824,11 @@ function calcScore(r){
     {label:'睡眠7h+',icon:'😴',done:sleepOk},
     {label:'お酒なし',icon:'🍵',done:!d.alcohol},
     {label:'快腸',icon:'✨',done:!!(d.stool&&!d.residualStool)},
-    {label:'間食なし',icon:'🥗',done:!d.snack},
-    {label:'Caffなし',icon:'🌿',done:!d.cafe},
+    {label:'お菓子なし',icon:'🍰',done:!d.sweets},
   ];
   const plusDone=plusItems.filter(x=>x.done).length;
 
-  return{mustDone,mustTotal,condDone,condTotal,plusDone,plusTotal:5,plusItems,
+  return{mustDone,mustTotal,condDone,condTotal,plusDone,plusTotal:4,plusItems,
     total:mustDone+condDone,totalMax:mustTotal+condTotal};
 }
 
@@ -847,7 +845,7 @@ function initHome(){
 function renderHome(){
   document.getElementById('curDateLbl').textContent=fmtDisp(curDate);
   const r=getDR(fmtDate(curDate));
-  loadUI(r);updateProg(r);updateExerciseHint();renderCustomList(r);
+  loadUI(r);updateProg(r);updateExerciseHint();
 }
 function loadUI(r){
   document.querySelectorAll('[data-key]').forEach(el=>{
@@ -856,6 +854,7 @@ function loadUI(r){
   });
   updateCleansingUI(r);
   updateDayTypeUI(r);
+  const mt=document.getElementById('memoText');if(mt)mt.value=r.memo||'';
 }
 function updateCleansingUI(r){
   const hasSunscreen=!!(r.morning&&r.morning.sunscreen);
@@ -886,6 +885,8 @@ function updateDayTypeUI(r){
   ['work','out','home'].forEach(t=>{const b=document.getElementById('dt_'+t);if(b)b.classList.toggle('sel',dt===t);});
   const m=document.getElementById('movedHourlyItem');
   if(m)m.style.display=dt!=='out'?'flex':'none';
+  const ex=document.getElementById('exerciseItem');
+  if(ex)ex.style.display=dt!=='out'?'flex':'none';
 }
 function updateExerciseHint(){
   const st=getS().exerciseStage||1;
@@ -912,9 +913,6 @@ function updateBadges(r){
   const dTot=dBase+(!isOut?1:0);
   const bdgDaily=document.getElementById('bdgDaily');
   if(bdgDaily)bdgDaily.textContent=dDone+'/'+dTot;
-  const ci=getCI(),cr=r.custom||{};
-  const bdgCustom=document.getElementById('bdgCustom');
-  if(bdgCustom)bdgCustom.textContent=ci.filter(i=>cr[i.id]).length+'/'+ci.length;
 }
 function toggleSec(name){
   const cap=name[0].toUpperCase()+name.slice(1);
@@ -925,31 +923,10 @@ function toggleSec(name){
   arr.classList.toggle('open',open);
 }
 
-// ===== CUSTOM =====
-function renderCustomList(r){
-  const items=getCI(),cr=(r&&r.custom)||{};
-  document.getElementById('customList').innerHTML=items.map(it=>`
-    <div class="ci"><div class="cl">${esc(it.label)}</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <label class="tgl"><input type="checkbox" ${cr[it.id]?'checked':''} onchange="ckCustom(this,'${it.id}')"><span class="tsl"></span></label>
-        <button class="del" onclick="delCustom('${it.id}')">×</button>
-      </div></div>`).join('');
-}
-function ckCustom(el,id){
+// ===== MEMO =====
+function saveMemo(val){
   const dt=fmtDate(curDate),r=getDR(dt);
-  if(!r.custom)r.custom={};r.custom[id]=el.checked;
-  setDR(dt,r);updateProg(r);showSaved();
-}
-function addCustom(){
-  const inp=document.getElementById('customInput');
-  const lbl=inp.value.trim();if(!lbl)return;
-  const items=getCI();items.push({id:'c'+Date.now(),label:lbl});
-  setCI(items);inp.value='';
-  renderCustomList(getDR(fmtDate(curDate)));updateBadges(getDR(fmtDate(curDate)));
-}
-function delCustom(id){
-  setCI(getCI().filter(i=>i.id!==id));
-  renderCustomList(getDR(fmtDate(curDate)));updateBadges(getDR(fmtDate(curDate)));
+  r.memo=val;setDR(dt,r);showSaved();
 }
 
 // ===== MONTHLY =====
@@ -963,7 +940,7 @@ const MF={
   hair_loss:{key:'hair.hairLoss',opts:[{v:'decreased',l:'減った'},{v:'same',l:'同じ'},{v:'increased',l:'増えた',bad:true}]},
   body_waist:{key:'body.waist',opts:[{v:'looser',l:'ゆるくなった'},{v:'same',l:'変わらない'},{v:'tighter',l:'きつくなった',bad:true}]},
   body_light:{key:'body.lightFeeling',opts:[{v:'yes',l:'はい'},{v:'no',l:'いいえ',bad:true}]},
-  income_uco:{key:'income.ucoProgress',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし'}]}
+  uco_inquiry:{key:'income.ucoInquiry',opts:[{v:'yes',l:'あり'},{v:'no',l:'なし'}]}
 };
 
 // Asset phase definitions
@@ -973,14 +950,25 @@ const ASSET_PHASES=[
   {year:2028,label:'2028年末',savings:1700,nisa:660,ideco:340,care:35},
   {year:2029,label:'2029年末',savings:1850,nisa:900,ideco:300,care:50},
 ];
+// 2026年4月時点の初期残高（万円）
+const ASSET_INIT={savings:1500,nisa:464,ideco:188,care:0};
+const ASSET_BASE_YM='2026-04';
 const ASSET_FIELDS=[
-  {key:'salary',label:'月収（手取り）',unit:'万円',phaseKey:null},
-  {key:'sideIncome',label:'副業収入/月',unit:'万円',phaseKey:null},
-  {key:'savings',label:'貯蓄残高',unit:'万円',phaseKey:'savings'},
-  {key:'nisa',label:'NISA残高',unit:'万円',phaseKey:'nisa'},
-  {key:'ideco',label:'iDeCo残高',unit:'万円',phaseKey:'ideco'},
-  {key:'careBuffer',label:'医療費バッファ',unit:'万円',phaseKey:'care'},
+  {key:'salary',label:'月収（手取り）',unit:'万円',totalKey:null},
+  {key:'sideIncome',label:'副業収入（今月）',unit:'万円',totalKey:null},
+  {key:'savingsAdd',label:'貯金 積立額（今月）',unit:'万円',totalKey:'savings',phaseKey:'savings'},
+  {key:'nisaAdd',label:'NISA 積立額（今月）',unit:'万円',totalKey:'nisa',phaseKey:'nisa'},
+  {key:'idecoAdd',label:'iDeCo 積立額（今月）',unit:'万円',totalKey:'ideco',phaseKey:'ideco'},
+  {key:'careAdd',label:'介護バッファ 積立額（今月）',unit:'万円',totalKey:'care',phaseKey:'care'},
 ];
+function assetCumulative(totalKey,upToYm){
+  const init=ASSET_INIT[totalKey]||0;
+  const allM=ld(SK.m);
+  const addKey=totalKey+'Add';
+  return Object.keys(allM)
+    .filter(ym=>ym>ASSET_BASE_YM&&ym<=upToYm)
+    .reduce((s,ym)=>{const v=allM[ym].asset&&allM[ym].asset[addKey];return s+(v!=null&&v!==''?Number(v):0);},init);
+}
 
 function getCurrentPhase(){
   const yr=new Date().getFullYear();
@@ -1002,8 +990,8 @@ function renderMonthly(){
     const{key,opts}=MF[fid];const cur=getNested(r,key);
     el.innerHTML=opts.map(o=>`<button class="rb${cur===o.v?' sel':''}${o.bad&&cur===o.v?' bad':''}" onclick="selMO('${fid}','${o.v}',this,${!!o.bad})">${o.l}</button>`).join('');
   });
-  const ia=document.getElementById('income_amount');
-  if(ia)ia.value=getNested(r,'income.amount')||'';
+  const uh=document.getElementById('uco_hours');
+  if(uh)uh.value=getNested(r,'income.ucoHours')||'';
   autoStats(ym);
   renderAssetSection(ym);
 }
@@ -1080,25 +1068,27 @@ function renderAssetSection(ym){
   const phaseEl=document.getElementById('assetPhaseBar');
   if(phaseEl){
     phaseEl.innerHTML=`<div class="asset-phase-lbl">📍 現在フェーズ: ${phase.label}</div>
-      <div class="asset-phase-sub">貯蓄目標 <b>${phase.savings}万円</b> ／ NISA累計目標 <b>${phase.nisa}万円</b><br>iDeCo累計目標 <b>${phase.ideco}万円</b> ／ 医療備え <b>${phase.care}万円</b></div>`;
+      <div class="asset-phase-sub">貯蓄目標 <b>${phase.savings}万円</b> ／ NISA累計目標 <b>${phase.nisa}万円</b><br>iDeCo累計目標 <b>${phase.ideco}万円</b> ／ 介護備え <b>${phase.care}万円</b></div>`;
   }
   const fieldsEl=document.getElementById('assetFields');
   if(!fieldsEl)return;
   const asset=r.asset||{};
   fieldsEl.innerHTML=ASSET_FIELDS.map(f=>{
     const val=asset[f.key]!=null?asset[f.key]:'';
-    let diffHtml='';
-    if(f.phaseKey&&val!==''){
+    let extraHtml='';
+    if(f.totalKey){
+      const total=assetCumulative(f.totalKey,ym);
       const tgt=phase[f.phaseKey];
-      const diff=parseFloat(val)-tgt;
+      const diff=total-tgt;
       const cls=diff>=0?'ok':'ng';
       const sign=diff>=0?'+':'';
-      diffHtml=`<div class="af-diff ${cls}">目標差 ${sign}${diff.toFixed(1)}万</div>`;
+      extraHtml=`<div style="margin-top:4px;font-size:12px;color:var(--txl)">累計残高: <b style="font-size:14px;color:var(--tx)">${total.toFixed(1)}万円</b></div>
+        <div class="af-diff ${cls}">目標差 ${sign}${diff.toFixed(1)}万</div>`;
     }
     return`<div class="asset-field">
       <div class="af-lbl">${f.label}</div>
       <div class="af-row"><input type="number" class="af-inp" value="${val}" placeholder="0" oninput="saveAsset('${f.key}',this.value)"><span class="af-unit">${f.unit}</span></div>
-      ${diffHtml}
+      ${extraHtml}
     </div>`;
   }).join('');
 }
@@ -1179,7 +1169,53 @@ function renderPeriods(){
   }).join('');
 }
 function selReviewM(ym){reviewYM=ym;renderPeriods();renderReview()}
-function renderReview(){renderImproveItems(reviewYM);renderGoodItems(reviewYM);renderBowelStats(reviewYM);renderSleepStats(reviewYM);renderAssetPosition(reviewYM);renderMChart();renderAssetChart();}
+function renderReview(){renderImproveItems(reviewYM);renderGoodItems(reviewYM);renderBowelStats(reviewYM);renderSleepStats(reviewYM);renderAssetPosition(reviewYM);renderMChart();renderAssetChart();renderCorrelation();}
+
+function renderCorrelation(){
+  const el=document.getElementById('correlationSection');if(!el)return;
+  const allM=ld(SK.m);
+  const allD=ld(SK.d);
+  // Collect months that have both routine data and monthly check data
+  const months=Object.keys(allM).sort();
+  const valid=months.map(m=>({ym:m,rates:monthRates(m),cond:condScore(m)})).filter(d=>d.cond!==null&&d.rates.some(r=>r>0));
+  if(valid.length<2){
+    el.innerHTML=`<div style="font-size:13px;color:var(--txl);text-align:center;padding:12px 0">月1チェックと日々の記録が<b>2ヶ月以上</b>蓄積されると相関が表示されます<br><span style="font-size:11px">(現在: ${valid.length}ヶ月分)</span></div>`;
+    return;
+  }
+  // Compute median condScore to split "good" vs "other" months
+  const scores=valid.map(d=>d.cond).sort((a,b)=>a-b);
+  const median=scores[Math.floor(scores.length/2)];
+  const goodM=valid.filter(d=>d.cond>=median);
+  const otherM=valid.filter(d=>d.cond<median);
+  // Compute avg achievement per RL item in good vs other months
+  const corr=RL.map((item,i)=>{
+    const ga=goodM.length?Math.round(goodM.reduce((s,d)=>s+(d.rates[i]||0),0)/goodM.length):null;
+    const oa=otherM.length?Math.round(otherM.reduce((s,d)=>s+(d.rates[i]||0),0)/otherM.length):null;
+    const diff=(ga!==null&&oa!==null)?ga-oa:0;
+    return{lbl:item.lbl,goodAvg:ga,otherAvg:oa,diff};
+  }).sort((a,b)=>b.diff-a.diff);
+  // Top 3 positive (good-state months had higher achievement)
+  const top=corr.filter(c=>c.diff>0).slice(0,3);
+  // Top 3 negative (good-state months had LOWER - these are symptoms not habits)
+  const bottom=corr.filter(c=>c.diff<0).slice(-3).reverse();
+  const monthNote=valid.length+'ヶ月のデータ（状態良好: '+goodM.length+'ヶ月 / その他: '+otherM.length+'ヶ月）';
+  let html=`<div style="font-size:11px;color:var(--txl);margin-bottom:12px">${monthNote}</div>`;
+  if(top.length){
+    html+=`<div style="font-size:12px;font-weight:700;color:var(--gn);margin-bottom:6px">✅ 体の状態が良い月によく達成できていた習慣</div>`;
+    html+=top.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--br)">
+      <span style="font-size:13px">${c.lbl}</span>
+      <span style="font-size:12px;color:var(--txl)">良月 <b style="color:var(--gn)">${c.goodAvg}%</b> / 他 ${c.otherAvg}%</span>
+    </div>`).join('');
+  }
+  if(bottom.length&&valid.length>=3){
+    html+=`<div style="font-size:12px;font-weight:700;color:var(--yw);margin-top:12px;margin-bottom:6px">📊 体の状態に関係が薄かった習慣</div>`;
+    html+=bottom.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--br)">
+      <span style="font-size:13px;color:var(--txl)">${c.lbl}</span>
+      <span style="font-size:12px;color:var(--txl)">良月 ${c.goodAvg}% / 他 ${c.otherAvg}%</span>
+    </div>`).join('');
+  }
+  el.innerHTML=html;
+}
 
 function renderImproveItems(ym){
   const el=document.getElementById('improveItems');if(!el)return;
@@ -1315,11 +1351,11 @@ function renderAssetPosition(ym){
   const phase=getCurrentPhase();
   const rows=[
     {label:'副業収入/月',val:asset.sideIncome,target:15,unit:'万円',note:'目標 15〜20万円'},
-    {label:'貯蓄残高',val:asset.savings,target:phase.savings,unit:'万円',note:`${phase.label}目標 ${phase.savings}万円`},
-    {label:'NISA残高',val:asset.nisa,target:phase.nisa,unit:'万円',note:`${phase.label}目標 ${phase.nisa}万円`},
-    {label:'iDeCo残高',val:asset.ideco,target:phase.ideco,unit:'万円',note:`${phase.label}目標 ${phase.ideco}万円`},
+    {label:'貯蓄残高',val:assetCumulative('savings',ym),target:phase.savings,unit:'万円',note:`${phase.label}目標 ${phase.savings}万円`},
+    {label:'NISA残高',val:assetCumulative('nisa',ym),target:phase.nisa,unit:'万円',note:`${phase.label}目標 ${phase.nisa}万円`},
+    {label:'iDeCo残高',val:assetCumulative('ideco',ym),target:phase.ideco,unit:'万円',note:`${phase.label}目標 ${phase.ideco}万円`},
   ];
-  const noData=rows.every(r=>r.val==null||r.val==='');
+  const noData=rows.every(r=>r.val==null||r.val===''||r.val===0);
   if(noData){el.innerHTML='<div style="font-size:13px;color:var(--txl)">月1チェックで資産を入力すると表示されます</div>';return;}
   el.innerHTML=rows.map(row=>{
     if(row.val==null||row.val==='')return`<div style="padding:10px 0;border-bottom:1px solid var(--br)">
@@ -1356,10 +1392,10 @@ function renderAssetChart(){
   const allM=ld(SK.m);
   const months=Object.keys(allM).sort().slice(-12);
   if(aChart){aChart.destroy();aChart=null;}
-  const savData=months.map(m=>(allM[m].asset&&allM[m].asset.savings!=null)?Number(allM[m].asset.savings):null);
-  const nisData=months.map(m=>(allM[m].asset&&allM[m].asset.nisa!=null)?Number(allM[m].asset.nisa):null);
-  const hasData=savData.some(v=>v!=null)||nisData.some(v=>v!=null);
-  if(!hasData){
+  const savData=months.map(m=>assetCumulative('savings',m));
+  const nisData=months.map(m=>assetCumulative('nisa',m));
+  const idecoData=months.map(m=>assetCumulative('ideco',m));
+  if(!months.length){
     const ctx=document.getElementById('assetChart').getContext('2d');
     ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
     ctx.fillStyle='#aaa';ctx.font='14px sans-serif';ctx.textAlign='center';
@@ -1372,6 +1408,7 @@ function renderAssetChart(){
     datasets:[
       {label:'貯蓄',data:savData,borderColor:'#6B9FD4',backgroundColor:'rgba(107,159,212,0.1)',tension:0.4,fill:true,pointRadius:4,spanGaps:true},
       {label:'NISA',data:nisData,borderColor:'#68B96A',backgroundColor:'rgba(104,185,106,0.1)',tension:0.4,fill:true,pointRadius:4,spanGaps:true},
+      {label:'iDeCo',data:idecoData,borderColor:'#F5A623',backgroundColor:'rgba(245,166,35,0.1)',tension:0.4,fill:false,pointRadius:4,spanGaps:true},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw!=null?c.raw+'万円':'未入力'}`}}},
